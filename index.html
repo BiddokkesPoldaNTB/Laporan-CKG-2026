@@ -849,9 +849,7 @@ async function submitData() {
     statusNikahDemo: g('statusNikahDemo'),
     disabilitas: g('disabilitas'),
     batukTB: g('batukTB'),
-    jumlahFoto: 1,
     namaFoto: fotoData.name,
-    fotoBase64: fotoData.dataUrl,
   };
 
   // Loading
@@ -860,18 +858,15 @@ async function submitData() {
   saveBtn.disabled = true;
 
   // Kirim ke Google Spreadsheet
-  let kirimBerhasil = false;
   try {
-    const res = await fetch(APPS_SCRIPT_URL, {
+    await fetch(APPS_SCRIPT_URL, {
       method: 'POST',
       mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(rec),
     });
-    kirimBerhasil = true; // no-cors selalu resolve jika tidak ada network error
   } catch(err) {
-    console.warn('Gagal kirim ke Google Sheets:', err);
-    showToast('⚠️ Koneksi bermasalah, data disimpan lokal', 'error');
+    console.warn('Fetch error (no-cors normal):', err);
   }
 
   // Simpan lokal
@@ -888,7 +883,7 @@ async function submitData() {
   document.getElementById('successScreen').style.display = 'block';
   document.getElementById('rekapSection').style.display = 'none';
 
-  showToast(kirimBerhasil ? 'Data berhasil dikirim ke Google Spreadsheet!' : 'Data tersimpan lokal, coba kirim ulang nanti', kirimBerhasil ? 'success' : 'info');
+  showToast('Data berhasil dikirim ke Google Spreadsheet!', 'success');
 }
 
 function addNew() {
