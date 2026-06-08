@@ -1,65 +1,969 @@
-function doPost(e) {
-  try {
-    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-    var data = JSON.parse(e.postData.contents);
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laporan CKG 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
 
-    // Buat header jika baris pertama kosong
-    if (sheet.getLastRow() === 0) {
-      sheet.appendRow([
-        'No','Timestamp','Nama Lengkap','NIK','Satker','NIP/NRP',
-        'Tanggal Lahir','Jenis Kelamin','No. WhatsApp',
-        'Status Nikah (Pendataan)','Pekerjaan','Alamat Domisili',
-        'Status Nikah (Demografi)','Status Disabilitas',
-        'Riwayat Batuk TB','Jumlah Foto','Link Foto'
-      ]);
-    }
-
-    // Simpan foto ke Google Drive (jika ada)
-    var linkFoto = '-';
-    if (data.fotoBase64) {
-      try {
-        var base64 = data.fotoBase64.split(',')[1]; // hapus prefix "data:image/...;base64,"
-        var mimeType = data.fotoBase64.split(';')[0].split(':')[1];
-        var blob = Utilities.newBlob(Utilities.base64Decode(base64), mimeType, data.namaFoto || 'foto.jpg');
-        
-        // Simpan ke folder "Foto KTP CKG 2026" di Drive (akan dibuat otomatis jika belum ada)
-        var folderName = 'Foto KTP CKG 2026';
-        var folders = DriveApp.getFoldersByName(folderName);
-        var folder = folders.hasNext() ? folders.next() : DriveApp.createFolder(folderName);
-        
-        var file = folder.createFile(blob);
-        file.setName(data.nik + '_' + (data.namaFoto || 'foto.jpg'));
-        file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-        linkFoto = file.getUrl();
-      } catch(fotoErr) {
-        linkFoto = 'Gagal: ' + fotoErr.toString();
-      }
-    }
-
-    var no = sheet.getLastRow(); // nomor urut otomatis
-    sheet.appendRow([
-      no,
-      new Date().toLocaleString('id-ID'),
-      data.namaLengkap, data.nik, data.satker, data.nipNrp,
-      data.tanggalLahir, data.jenisKelamin, data.noWa,
-      data.statusNikah, data.pekerjaan, data.alamat,
-      data.statusNikahDemo, data.disabilitas,
-      data.batukTB, data.jumlahFoto || 1, linkFoto
-    ]);
-
-    return ContentService
-      .createTextOutput(JSON.stringify({ status: 'success', foto: linkFoto }))
-      .setMimeType(ContentService.MimeType.JSON);
-
-  } catch(err) {
-    return ContentService
-      .createTextOutput(JSON.stringify({ status: 'error', message: err.toString() }))
-      .setMimeType(ContentService.MimeType.JSON);
+  :root {
+    --navy: #0f2340;
+    --teal: #0d9488;
+    --teal-light: #14b8a6;
+    --teal-pale: #ccfbf1;
+    --green: #16a34a;
+    --green-pale: #dcfce7;
+    --red: #dc2626;
+    --red-pale: #fee2e2;
+    --gold: #f59e0b;
+    --gold-light: #fef3c7;
+    --slate: #64748b;
+    --slate-light: #f1f5f9;
+    --white: #ffffff;
+    --border: #e2e8f0;
+    --text: #1e293b;
+    --text-soft: #475569;
+    --error: #ef4444;
+    --success: #22c55e;
+    --shadow: 0 4px 24px rgba(15,35,64,0.10);
+    --shadow-lg: 0 8px 40px rgba(15,35,64,0.15);
+    --radius: 16px;
+    --radius-sm: 10px;
   }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: linear-gradient(150deg, #064e3b 0%, #0f2340 50%, #1e3a5f 100%);
+    min-height: 100vh;
+    padding: 24px 16px 60px;
+    color: var(--text);
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: radial-gradient(circle, rgba(20,184,166,0.10) 1px, transparent 1px);
+    background-size: 36px 36px;
+    pointer-events: none; z-index: 0;
+  }
+
+  .page-wrapper { max-width: 760px; margin: 0 auto; position: relative; z-index: 1; }
+
+  /* HEADER */
+  .app-header { text-align: center; padding: 32px 24px 20px; margin-bottom: 16px; }
+
+  .header-logo { display: flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 14px; }
+
+  .logo-icon {
+    width: 56px; height: 56px;
+    background: linear-gradient(135deg, #14b8a6, #0d9488);
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
+    box-shadow: 0 8px 24px rgba(13,148,136,0.4);
+    flex-shrink: 0;
+  }
+
+  .header-titles { text-align: left; }
+  .app-header .sub-label { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #5eead4; margin-bottom: 4px; }
+  .app-header h1 { font-size: clamp(18px, 4vw, 27px); font-weight: 800; color: #fff; line-height: 1.2; letter-spacing: -0.4px; }
+  .app-header h1 span { color: #5eead4; }
+
+  .header-meta { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+  .meta-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.65);
+    font-size: 11px; font-weight: 500;
+    padding: 5px 12px; border-radius: 100px;
+  }
+
+  /* PROGRESS */
+  .progress-wrap { margin-bottom: 16px; }
+  .progress-info { display: flex; justify-content: space-between; margin-bottom: 7px; }
+  .progress-label { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.55); }
+  .progress-pct { font-size: 12px; font-weight: 700; color: #5eead4; }
+  .progress-bar { height: 6px; background: rgba(255,255,255,0.12); border-radius: 100px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, #0d9488, #5eead4); border-radius: 100px; transition: width 0.4s cubic-bezier(.4,0,.2,1); }
+
+  /* STEP NAV */
+  .step-nav {
+    display: flex; gap: 0;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 100px; padding: 4px;
+    margin-bottom: 20px; overflow-x: auto;
+  }
+
+  .step-btn {
+    flex: 1; min-width: 0;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 9px 8px; border-radius: 100px; border: none;
+    background: transparent; color: rgba(255,255,255,0.4);
+    font-family: inherit; font-size: 12px; font-weight: 600;
+    cursor: pointer; transition: all 0.25s; white-space: nowrap;
+  }
+
+  .step-num {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: rgba(255,255,255,0.12);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; flex-shrink: 0;
+  }
+
+  .step-btn.active { background: var(--teal); color: #fff; box-shadow: 0 2px 14px rgba(13,148,136,0.5); }
+  .step-btn.active .step-num { background: rgba(255,255,255,0.25); }
+  .step-btn.done { color: #5eead4; }
+  .step-btn.done .step-num { background: rgba(13,148,136,0.3); color: #5eead4; }
+
+  /* CARD */
+  .card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-lg); overflow: hidden; margin-bottom: 14px; animation: cardIn 0.3s ease; }
+
+  @keyframes cardIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+
+  .card-header { display: flex; align-items: center; gap: 12px; padding: 16px 22px; border-bottom: 1px solid var(--border); }
+  .card-header.teal  { background: linear-gradient(135deg, #f0fdfa, #ccfbf1); }
+  .card-header.blue  { background: linear-gradient(135deg, #eff6ff, #dbeafe); }
+  .card-header.green { background: linear-gradient(135deg, #f0fdf4, #dcfce7); }
+  .card-header.amber { background: linear-gradient(135deg, #fffbeb, #fef3c7); }
+  .card-header.red   { background: linear-gradient(135deg, #fff5f5, #fee2e2); }
+
+  .card-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .ci-teal  { background: var(--teal-pale); }
+  .ci-blue  { background: #dbeafe; }
+  .ci-green { background: var(--green-pale); }
+  .ci-amber { background: var(--gold-light); }
+  .ci-red   { background: var(--red-pale); }
+
+  .card-header h2 { font-size: 15px; font-weight: 800; color: var(--navy); }
+  .card-header p  { font-size: 12px; color: var(--slate); margin-top: 2px; }
+
+  .card-body { padding: 22px; }
+
+  /* FORM */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form-grid .full { grid-column: 1/-1; }
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+
+  .form-label { font-size: 12px; font-weight: 700; color: var(--navy); }
+  .form-label .req  { color: var(--error); margin-left: 3px; }
+  .form-label .hint { font-weight: 400; color: var(--slate); font-size: 11px; margin-left: 4px; }
+
+  .form-input, .form-select, .form-textarea {
+    width: 100%; padding: 10px 13px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: inherit; font-size: 14px; color: var(--text);
+    background: #fafafa; transition: all 0.2s; outline: none;
+    appearance: none; -webkit-appearance: none;
+  }
+
+  .form-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 36px;
+    cursor: pointer;
+  }
+
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    border-color: var(--teal); background: #fff;
+    box-shadow: 0 0 0 3px rgba(13,148,136,0.12);
+  }
+
+  .form-input.error, .form-select.error, .form-textarea.error {
+    border-color: var(--error);
+    box-shadow: 0 0 0 3px rgba(239,68,68,0.1);
+  }
+
+  .form-textarea { resize: vertical; min-height: 90px; }
+
+  .error-msg { font-size: 11px; color: var(--error); font-weight: 600; display: none; }
+  .error-msg.show { display: block; }
+
+  /* NAV BUTTONS */
+  .nav-btns { display: flex; justify-content: space-between; gap: 12px; margin-top: 8px; }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 26px; border-radius: var(--radius-sm);
+    font-family: inherit; font-size: 14px; font-weight: 700;
+    cursor: pointer; transition: all 0.2s; border: none;
+  }
+
+  .btn-outline {
+    background: rgba(255,255,255,0.08);
+    border: 1.5px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.8);
+  }
+  .btn-outline:hover { background: rgba(255,255,255,0.15); color: #fff; }
+
+  .btn-primary { background: var(--teal); color: #fff; box-shadow: 0 4px 16px rgba(13,148,136,0.4); }
+  .btn-primary:hover { background: #0b8075; transform: translateY(-1px); }
+  .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  .btn-success { background: var(--green); color: #fff; box-shadow: 0 4px 16px rgba(22,163,74,0.4); }
+  .btn-success:hover { background: #15803d; transform: translateY(-1px); }
+  .btn-success:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  .btn-gold { background: var(--gold); color: #fff; box-shadow: 0 4px 16px rgba(245,158,11,0.35); }
+  .btn-gold:hover { background: #d97706; transform: translateY(-1px); }
+
+  /* SUMMARY */
+  .summary-block { margin-bottom: 22px; }
+  .summary-block-title {
+    font-size: 11px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 1.5px; color: var(--teal);
+    margin-bottom: 12px; padding-bottom: 8px;
+    border-bottom: 2px solid var(--teal-pale);
+  }
+  .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .s-item.full { grid-column: 1/-1; }
+  .s-lbl { font-size: 11px; color: var(--slate); font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 2px; }
+  .s-val { font-size: 14px; color: var(--text); font-weight: 500; }
+  .tag {
+    display: inline-block; padding: 3px 11px; border-radius: 100px;
+    font-size: 12px; font-weight: 700;
+    background: var(--teal-pale); color: #0f766e;
+  }
+
+  /* PHOTO UPLOAD */
+  .photo-dropzone {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 28px; text-align: center;
+    cursor: pointer; transition: all 0.25s;
+    background: #fafafa; position: relative;
+  }
+  .photo-dropzone:hover, .photo-dropzone.drag-over { border-color: var(--teal); background: var(--teal-pale); }
+  .photo-dropzone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+  .photo-dropzone .dz-icon { font-size: 36px; margin-bottom: 10px; }
+  .photo-dropzone h3 { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+  .photo-dropzone p { font-size: 12px; color: var(--slate); }
+
+  .photo-preview { margin-top: 16px; }
+  .photo-thumb-single {
+    position: relative; border-radius: var(--radius-sm);
+    overflow: hidden; max-width: 280px; margin: 0 auto;
+    border: 2px solid var(--border);
+    box-shadow: var(--shadow);
+  }
+  .photo-thumb-single img { width: 100%; display: block; max-height: 200px; object-fit: cover; }
+  .rm-btn-single {
+    position: absolute; top: 6px; right: 6px;
+    background: rgba(239,68,68,0.9); color: #fff;
+    border: none; cursor: pointer; border-radius: 6px;
+    font-size: 12px; font-weight: 700; padding: 4px 10px;
+  }
+  .photo-name-label {
+    text-align: center; font-size: 12px; color: var(--slate);
+    margin-top: 8px; font-weight: 500;
+  }
+
+  /* SUCCESS SCREEN */
+  .success-screen {
+    text-align: center; padding: 48px 24px;
+    animation: cardIn 0.4s ease;
+  }
+  .success-icon {
+    width: 80px; height: 80px; border-radius: 50%;
+    background: var(--green-pale);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 40px; margin: 0 auto 20px;
+    border: 3px solid var(--success);
+  }
+  .success-screen h2 { font-size: 22px; font-weight: 800; color: var(--navy); margin-bottom: 8px; }
+  .success-screen p { font-size: 14px; color: var(--slate); line-height: 1.6; }
+  .success-screen .btn { margin-top: 24px; }
+
+  /* REKAP TABLE */
+  .rekap-wrap { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow-lg); overflow: hidden; margin-top: 28px; }
+  .rekap-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; padding: 16px 20px; background: var(--navy); }
+  .rekap-header h3 { font-size: 14px; font-weight: 800; color: #fff; }
+  .rekap-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .count-badge { background: rgba(255,255,255,0.15); color: #5eead4; font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 100px; border: 1px solid rgba(255,255,255,0.2); }
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  thead th { background: #f8fafc; color: var(--navy); font-weight: 700; padding: 10px 12px; text-align: left; white-space: nowrap; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid var(--border); }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+  tbody tr:hover { background: #f8fafc; }
+  tbody td { padding: 9px 12px; color: var(--text-soft); vertical-align: middle; }
+  .del-btn { padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; border: none; cursor: pointer; background: #fee2e2; color: var(--error); transition: all 0.15s; }
+  .del-btn:hover { background: var(--error); color: #fff; }
+
+  /* TOAST */
+  .toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
+  .toast { display: flex; align-items: center; gap: 10px; padding: 13px 18px; border-radius: var(--radius-sm); box-shadow: var(--shadow-lg); font-size: 13px; font-weight: 600; animation: toastIn 0.3s ease; max-width: 320px; background: #fff; }
+  @keyframes toastIn { from { opacity:0; transform:translateX(20px); } to { opacity:1; transform:translateX(0); } }
+  .toast.success { border-left: 4px solid var(--success); }
+  .toast.error   { border-left: 4px solid var(--error); }
+  .toast.info    { border-left: 4px solid var(--teal); }
+
+  @media (max-width: 600px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .summary-grid { grid-template-columns: 1fr; }
+    .header-logo { flex-direction: column; text-align: center; }
+    .header-titles { text-align: center; }
+    .nav-btns { flex-direction: column-reverse; }
+    .btn { justify-content: center; }
+    .step-btn span:not(.step-num) { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<div class="page-wrapper">
+
+  <!-- HEADER -->
+  <div class="app-header">
+    <div class="header-logo">
+      <div class="logo-icon">🏥</div>
+      <div class="header-titles">
+        <div class="sub-label">Program Kesehatan Nasional</div>
+        <h1>Laporan <span>Cek Kesehatan Gratis</span> (CKG) 2026</h1>
+      </div>
+    </div>
+    <div class="header-meta">
+      <span class="meta-pill">📍 Biddokkes Polda NTB</span>
+      <span class="meta-pill">📅 Tahun 2026</span>
+      <span class="meta-pill">🔒 Data Terlindungi</span>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap">
+    <div class="progress-info">
+      <span class="progress-label" id="progressLabel">Langkah 1 dari 5 · Identitas Peserta</span>
+      <span class="progress-pct" id="progressPct">20%</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:20%"></div></div>
+  </div>
+
+  <!-- STEP NAV -->
+  <div class="step-nav">
+    <button class="step-btn active" id="sb1" onclick="goToStep(1)"><span class="step-num">1</span><span>Identitas</span></button>
+    <button class="step-btn" id="sb2" onclick="goToStep(2)"><span class="step-num">2</span><span>Pendataan</span></button>
+    <button class="step-btn" id="sb3" onclick="goToStep(3)"><span class="step-num">3</span><span>Demografi</span></button>
+    <button class="step-btn" id="sb4" onclick="goToStep(4)"><span class="step-num">4</span><span>Faktor Risiko</span></button>
+    <button class="step-btn" id="sb5" onclick="goToStep(5)"><span class="step-num">5</span><span>Foto & Simpan</span></button>
+  </div>
+
+  <!-- ═══ STEP 1: IDENTITAS ═══ -->
+  <div id="step1" class="step-content">
+    <div class="card">
+      <div class="card-header teal">
+        <div class="card-icon ci-teal">👤</div>
+        <div><h2>Identitas Peserta</h2><p>Data diri peserta Cek Kesehatan Gratis 2026</p></div>
+      </div>
+      <div class="card-body">
+        <div class="form-grid">
+
+          <div class="form-group full">
+            <label class="form-label">Nama Lengkap <span class="req">*</span><span class="hint">(sesuai KTP)</span></label>
+            <input type="text" class="form-input" id="namaLengkap" placeholder="Masukkan nama sesuai KTP">
+            <span class="error-msg" id="err-namaLengkap">Nama lengkap wajib diisi</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">NIK <span class="req">*</span><span class="hint">(16 digit)</span></label>
+            <input type="text" class="form-input" id="nik" placeholder="3500XXXXXXXXXXXX" maxlength="16" inputmode="numeric">
+            <span class="error-msg" id="err-nik">NIK wajib diisi 16 digit</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Satker <span class="req">*</span></label>
+            <select class="form-select" id="satker">
+              <option value="">— Pilih Satker —</option>
+              <option>ITWASDA</option>
+              <option>BIRO OPS</option>
+              <option>BIRO SDM</option>
+              <option>BIRO RENA</option>
+              <option>BIRO LOGISTIK</option>
+              <option>DITINTELKAM</option>
+              <option>DITRESKRIMUM</option>
+              <option>DITRESKRIMSUS</option>
+              <option>DITRESNARKOBA</option>
+              <option>DITLANTAS</option>
+              <option>DITSAMAPTA</option>
+              <option>DITPAMOBVIT</option>
+              <option>DITPOLAIRUD</option>
+              <option>DITBINMAS</option>
+              <option>DIT TAHTI</option>
+              <option>SATBRIMOB</option>
+              <option>BID PROPAM</option>
+              <option>BID HUMAS</option>
+              <option>BID KUM</option>
+              <option>BID TIK</option>
+              <option>BIDDOKKES</option>
+              <option>BID KEU</option>
+              <option>YANMA</option>
+              <option>SPRIPIM</option>
+              <option>SETUM</option>
+              <option>SPN POLDA NTB</option>
+              <option>RUMKIT BHAYANGKARA MATARAM</option>
+            </select>
+            <span class="error-msg" id="err-satker">Satker wajib dipilih</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">NIP / NRP <span class="req">*</span></label>
+            <input type="text" class="form-input" id="nipNrp" placeholder="Nomor Induk Pegawai / NRP">
+            <span class="error-msg" id="err-nipNrp">NIP/NRP wajib diisi</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Tanggal Lahir <span class="req">*</span></label>
+            <input type="date" class="form-input" id="tanggalLahir">
+            <span class="error-msg" id="err-tanggalLahir">Tanggal lahir wajib diisi</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Jenis Kelamin <span class="req">*</span></label>
+            <select class="form-select" id="jenisKelamin">
+              <option value="">— Pilih Jenis Kelamin —</option>
+              <option>Laki-laki</option>
+              <option>Perempuan</option>
+            </select>
+            <span class="error-msg" id="err-jenisKelamin">Jenis kelamin wajib dipilih</span>
+          </div>
+
+          <div class="form-group full">
+            <label class="form-label">No. WhatsApp Aktif <span class="req">*</span></label>
+            <input type="tel" class="form-input" id="noWa" placeholder="08xxxxxxxxxx" inputmode="tel">
+            <span class="error-msg" id="err-noWa">No. WhatsApp wajib diisi</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="nav-btns">
+      <div></div>
+      <button class="btn btn-primary" onclick="nextStep(1)">Selanjutnya →</button>
+    </div>
+  </div>
+
+  <!-- ═══ STEP 2: PENDATAAN ═══ -->
+  <div id="step2" class="step-content" style="display:none">
+    <div class="card">
+      <div class="card-header blue">
+        <div class="card-icon ci-blue">📋</div>
+        <div><h2>Formulir Pendataan</h2><p>Informasi status dan pekerjaan peserta</p></div>
+      </div>
+      <div class="card-body">
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label class="form-label">Status Pernikahan <span class="req">*</span></label>
+            <select class="form-select" id="statusNikah">
+              <option value="">— Pilih Status —</option>
+              <option>Menikah</option>
+              <option>Belum Menikah</option>
+              <option>Cerai Mati</option>
+              <option>Cerai Hidup</option>
+            </select>
+            <span class="error-msg" id="err-statusNikah">Status pernikahan wajib dipilih</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Pekerjaan <span class="req">*</span></label>
+            <select class="form-select" id="pekerjaan">
+              <option value="">— Pilih Pekerjaan —</option>
+              <option>Polri</option>
+              <option>ASN Polri</option>
+            </select>
+            <span class="error-msg" id="err-pekerjaan">Pekerjaan wajib dipilih</span>
+          </div>
+
+          <div class="form-group full">
+            <label class="form-label">Alamat Domisili <span class="req">*</span><span class="hint">(sesuai domisili)</span></label>
+            <textarea class="form-textarea" id="alamat" placeholder="Masukkan alamat lengkap sesuai domisili saat ini..."></textarea>
+            <span class="error-msg" id="err-alamat">Alamat domisili wajib diisi</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="nav-btns">
+      <button class="btn btn-outline" onclick="prevStep(2)">← Kembali</button>
+      <button class="btn btn-primary" onclick="nextStep(2)">Selanjutnya →</button>
+    </div>
+  </div>
+
+  <!-- ═══ STEP 3: DEMOGRAFI ═══ -->
+  <div id="step3" class="step-content" style="display:none">
+    <div class="card">
+      <div class="card-header green">
+        <div class="card-icon ci-green">🌍</div>
+        <div><h2>Demografi</h2><p>Data demografi peserta CKG 2026</p></div>
+      </div>
+      <div class="card-body">
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label class="form-label">Status Pernikahan <span class="req">*</span></label>
+            <select class="form-select" id="statusNikahDemo">
+              <option value="">— Pilih Status —</option>
+              <option>Belum Menikah</option>
+              <option>Menikah</option>
+              <option>Cerai Mati</option>
+              <option>Cerai Hidup</option>
+            </select>
+            <span class="error-msg" id="err-statusNikahDemo">Status pernikahan wajib dipilih</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Status Disabilitas <span class="req">*</span></label>
+            <select class="form-select" id="disabilitas">
+              <option value="">— Pilih Status —</option>
+              <option>Non Disabilitas</option>
+              <option>Penyandang Disabilitas</option>
+            </select>
+            <span class="error-msg" id="err-disabilitas">Status disabilitas wajib dipilih</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="nav-btns">
+      <button class="btn btn-outline" onclick="prevStep(3)">← Kembali</button>
+      <button class="btn btn-primary" onclick="nextStep(3)">Selanjutnya →</button>
+    </div>
+  </div>
+
+  <!-- ═══ STEP 4: FAKTOR RISIKO TB ═══ -->
+  <div id="step4" class="step-content" style="display:none">
+    <div class="card">
+      <div class="card-header red">
+        <div class="card-icon ci-red">🫁</div>
+        <div><h2>Faktor Risiko TB</h2><p>Skrining awal risiko Tuberkulosis (TB)</p></div>
+      </div>
+      <div class="card-body">
+        <div class="form-grid">
+
+          <div class="form-group full">
+            <label class="form-label">Apakah Anda pernah atau sedang mengalami batuk yang tidak sembuh-sembuh? <span class="req">*</span></label>
+            <select class="form-select" id="batukTB">
+              <option value="">— Pilih Jawaban —</option>
+              <option>Ya, Lebih dari 2 minggu</option>
+              <option>Ya, Kurang dari 2 minggu</option>
+              <option>Tidak Batuk</option>
+            </select>
+            <span class="error-msg" id="err-batukTB">Pertanyaan ini wajib dijawab</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="nav-btns">
+      <button class="btn btn-outline" onclick="prevStep(4)">← Kembali</button>
+      <button class="btn btn-primary" onclick="nextStep(4)">Selanjutnya →</button>
+    </div>
+  </div>
+
+  <!-- ═══ STEP 5: FOTO & SIMPAN ═══ -->
+  <div id="step5" class="step-content" style="display:none">
+
+    <!-- Ringkasan -->
+    <div class="card">
+      <div class="card-header teal">
+        <div class="card-icon ci-teal">📋</div>
+        <div><h2>Ringkasan Data</h2><p>Periksa kembali sebelum menyimpan</p></div>
+      </div>
+      <div class="card-body" id="summaryContent"></div>
+    </div>
+
+    <!-- Upload Foto KTP -->
+    <div class="card">
+      <div class="card-header amber">
+        <div class="card-icon ci-amber">📷</div>
+        <div><h2>Foto KTP</h2><p>Ambil foto KTP atau pilih dari galeri (wajib diisi)</p></div>
+      </div>
+      <div class="card-body">
+        <div class="photo-dropzone" id="dropzone">
+          <input type="file" id="fotoInput" accept="image/*" capture="environment">
+          <div class="dz-icon">📸</div>
+          <h3>Ambil Foto / Pilih dari Galeri</h3>
+          <p>Tap untuk membuka kamera atau pilih foto KTP dari galeri</p>
+        </div>
+        <div class="photo-preview" id="photoPreview" style="display:none">
+          <div class="photo-thumb-single" id="photoThumb">
+            <img id="photoImg" src="" alt="Foto KTP">
+            <button class="rm-btn-single" onclick="removePhoto()">✕ Hapus</button>
+          </div>
+          <p class="photo-name-label" id="photoNameLabel"></p>
+        </div>
+        <span class="error-msg" id="err-foto" style="margin-top:8px">Foto KTP wajib dilampirkan</span>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn btn-outline" onclick="prevStep(5)">← Edit Data</button>
+      <button class="btn btn-success" id="saveBtn" onclick="submitData()">💾 Simpan Data</button>
+    </div>
+  </div>
+
+  <!-- ═══ SUCCESS SCREEN ═══ -->
+  <div id="successScreen" style="display:none">
+    <div class="card">
+      <div class="card-body">
+        <div class="success-screen">
+          <div class="success-icon">✅</div>
+          <h2>Data Berhasil Disimpan!</h2>
+          <p>Terima kasih telah mengisi formulir CKG 2026.<br>Data Anda telah berhasil dikirim ke sistem.</p>
+          <button class="btn btn-primary" onclick="addNew()">+ Input Data Baru</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ REKAP (hanya tampil untuk admin) ═══ -->
+  <div class="rekap-wrap" id="rekapSection" style="display:none">
+    <div class="rekap-header">
+      <h3>📊 Rekap Data CKG 2026</h3>
+      <div class="rekap-actions">
+        <span class="count-badge" id="rekapCount">0 data</span>
+        <button class="btn btn-gold" onclick="exportExcel()" style="padding:8px 16px;font-size:12px;">📥 Export Excel</button>
+        <button class="btn btn-primary" onclick="addNew()" style="padding:8px 16px;font-size:12px;">+ Input Baru</button>
+      </div>
+    </div>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th><th>Nama Lengkap</th><th>NIK</th><th>Satker</th><th>NIP/NRP</th>
+            <th>Tgl Lahir</th><th>Jenis Kelamin</th><th>No. WA</th>
+            <th>Status Nikah</th><th>Pekerjaan</th><th>Alamat</th>
+            <th>Demografi Nikah</th><th>Disabilitas</th><th>Riwayat Batuk</th>
+            <th>Foto</th><th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="rekapTbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- /page-wrapper -->
+
+<script>
+// ── CONFIG ──
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbws6sePeXA_4TP2hPkDlX5G_-6AWiHhygvCprD3DaXsk_RRzrzq05e4Ovjw4iMpwfz1FQ/exec';
+
+const STEPS = [
+  null,
+  { label: 'Identitas Peserta',   pct: 20 },
+  { label: 'Formulir Pendataan',  pct: 40 },
+  { label: 'Demografi',           pct: 60 },
+  { label: 'Faktor Risiko TB',    pct: 80 },
+  { label: 'Foto & Simpan',       pct: 100 },
+];
+
+let currentStep = 1;
+let fotoData = null; // { dataUrl, name }
+let allData = [];
+try { allData = JSON.parse(localStorage.getItem('ckgData2026') || '[]'); } catch(e) { allData = []; }
+
+// ── INIT ──
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('fotoInput').addEventListener('change', e => {
+    if (e.target.files[0]) handleFoto(e.target.files[0]);
+  });
+
+  const dz = document.getElementById('dropzone');
+  dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+  dz.addEventListener('drop', e => {
+    e.preventDefault(); dz.classList.remove('drag-over');
+    if (e.dataTransfer.files[0]) handleFoto(e.dataTransfer.files[0]);
+  });
+});
+
+// ── NAVIGATION ──
+function goToStep(n) { if (n >= currentStep) return; currentStep = n; showStep(n); }
+
+function nextStep(n) {
+  if (!validateStep(n)) return;
+  currentStep = n + 1;
+  showStep(n + 1);
+  if (n + 1 === 5) buildSummary();
 }
 
-function doGet(e) {
-  return ContentService
-    .createTextOutput(JSON.stringify({ status: 'Apps Script aktif' }))
-    .setMimeType(ContentService.MimeType.JSON);
+function prevStep(n) { currentStep = n - 1; showStep(n - 1); }
+
+function showStep(n) {
+  document.querySelectorAll('.step-content').forEach(el => el.style.display = 'none');
+  const s = document.getElementById('step' + n);
+  if (s) s.style.display = 'block';
+
+  document.querySelectorAll('.step-btn').forEach((btn, i) => {
+    btn.classList.remove('active','done');
+    if (i + 1 === n) btn.classList.add('active');
+    else if (i + 1 < n) btn.classList.add('done');
+  });
+
+  const info = STEPS[n];
+  document.getElementById('progressFill').style.width = info.pct + '%';
+  document.getElementById('progressPct').textContent = info.pct + '%';
+  document.getElementById('progressLabel').textContent = `Langkah ${n} dari 5 · ${info.label}`;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+// ── VALIDATION ──
+function clearErrors() {
+  document.querySelectorAll('.error-msg').forEach(e => e.classList.remove('show'));
+  document.querySelectorAll('.form-input,.form-select,.form-textarea').forEach(e => e.classList.remove('error'));
+}
+
+function markErr(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.add('error');
+  const em = document.getElementById('err-' + id);
+  if (em) em.classList.add('show');
+}
+
+function validateStep(step) {
+  clearErrors();
+  let ok = true;
+
+  if (step === 1) {
+    ['namaLengkap','satker','nipNrp','tanggalLahir','jenisKelamin','noWa'].forEach(id => {
+      if (!document.getElementById(id).value.trim()) { markErr(id); ok = false; }
+    });
+    const nik = document.getElementById('nik').value.trim();
+    if (!nik || nik.length !== 16 || isNaN(nik)) { markErr('nik'); ok = false; }
+  }
+
+  if (step === 2) {
+    ['statusNikah','pekerjaan','alamat'].forEach(id => {
+      if (!document.getElementById(id).value.trim()) { markErr(id); ok = false; }
+    });
+  }
+
+  if (step === 3) {
+    ['statusNikahDemo','disabilitas'].forEach(id => {
+      if (!document.getElementById(id).value) { markErr(id); ok = false; }
+    });
+  }
+
+  if (step === 4) {
+    if (!document.getElementById('batukTB').value) { markErr('batukTB'); ok = false; }
+  }
+
+  if (!ok) showToast('Mohon lengkapi semua field yang wajib diisi', 'error');
+  return ok;
+}
+
+// ── FOTO ──
+function handleFoto(file) {
+  if (!file.type.startsWith('image/')) { showToast('File harus berupa gambar', 'error'); return; }
+  const reader = new FileReader();
+  reader.onload = e => {
+    fotoData = { dataUrl: e.target.result, name: file.name };
+    document.getElementById('photoImg').src = e.target.result;
+    document.getElementById('photoNameLabel').textContent = file.name;
+    document.getElementById('photoPreview').style.display = 'block';
+    document.getElementById('dropzone').style.display = 'none';
+    document.getElementById('err-foto').classList.remove('show');
+  };
+  reader.readAsDataURL(file);
+}
+
+function removePhoto() {
+  fotoData = null;
+  document.getElementById('fotoInput').value = '';
+  document.getElementById('photoPreview').style.display = 'none';
+  document.getElementById('dropzone').style.display = 'block';
+}
+
+// ── SUMMARY ──
+function buildSummary() {
+  const g = id => document.getElementById(id)?.value || '-';
+  const fmtDate = s => { if (!s||s==='-') return '-'; const d=new Date(s+'T00:00:00'); return d.toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'}); };
+
+  document.getElementById('summaryContent').innerHTML = `
+    <div class="summary-block">
+      <div class="summary-block-title">Identitas Peserta</div>
+      <div class="summary-grid">
+        <div class="s-item full"><div class="s-lbl">Nama Lengkap</div><div class="s-val">${g('namaLengkap')}</div></div>
+        <div class="s-item"><div class="s-lbl">NIK</div><div class="s-val" style="font-family:'JetBrains Mono',monospace;font-size:13px">${g('nik')}</div></div>
+        <div class="s-item"><div class="s-lbl">Satker</div><div class="s-val">${g('satker')}</div></div>
+        <div class="s-item"><div class="s-lbl">NIP / NRP</div><div class="s-val">${g('nipNrp')}</div></div>
+        <div class="s-item"><div class="s-lbl">Tanggal Lahir</div><div class="s-val">${fmtDate(g('tanggalLahir'))}</div></div>
+        <div class="s-item"><div class="s-lbl">Jenis Kelamin</div><div class="s-val">${g('jenisKelamin')}</div></div>
+        <div class="s-item"><div class="s-lbl">No. WhatsApp</div><div class="s-val">${g('noWa')}</div></div>
+      </div>
+    </div>
+    <div class="summary-block">
+      <div class="summary-block-title">Formulir Pendataan</div>
+      <div class="summary-grid">
+        <div class="s-item"><div class="s-lbl">Status Pernikahan</div><div class="s-val">${g('statusNikah')}</div></div>
+        <div class="s-item"><div class="s-lbl">Pekerjaan</div><div class="s-val">${g('pekerjaan')}</div></div>
+        <div class="s-item full"><div class="s-lbl">Alamat Domisili</div><div class="s-val">${g('alamat')}</div></div>
+      </div>
+    </div>
+    <div class="summary-block">
+      <div class="summary-block-title">Demografi</div>
+      <div class="summary-grid">
+        <div class="s-item"><div class="s-lbl">Status Pernikahan</div><div class="s-val">${g('statusNikahDemo')}</div></div>
+        <div class="s-item"><div class="s-lbl">Status Disabilitas</div><div class="s-val">${g('disabilitas')}</div></div>
+      </div>
+    </div>
+    <div class="summary-block">
+      <div class="summary-block-title">Faktor Risiko TB</div>
+      <div class="summary-grid">
+        <div class="s-item full"><div class="s-lbl">Riwayat Batuk</div><div class="s-val">${g('batukTB')}</div></div>
+      </div>
+    </div>`;
+}
+
+// ── SUBMIT ──
+async function submitData() {
+  // Validasi foto wajib
+  if (!fotoData) {
+    document.getElementById('err-foto').classList.add('show');
+    showToast('Foto KTP wajib dilampirkan', 'error');
+    return;
+  }
+
+  const g = id => document.getElementById(id)?.value || '';
+
+  const rec = {
+    id: Date.now(),
+    timestamp: new Date().toISOString(),
+    namaLengkap: g('namaLengkap'),
+    nik: g('nik'),
+    satker: g('satker'),
+    nipNrp: g('nipNrp'),
+    tanggalLahir: g('tanggalLahir'),
+    jenisKelamin: g('jenisKelamin'),
+    noWa: g('noWa'),
+    statusNikah: g('statusNikah'),
+    pekerjaan: g('pekerjaan'),
+    alamat: g('alamat'),
+    statusNikahDemo: g('statusNikahDemo'),
+    disabilitas: g('disabilitas'),
+    batukTB: g('batukTB'),
+    jumlahFoto: 1,
+    namaFoto: fotoData.name,
+    fotoBase64: fotoData.dataUrl,
+  };
+
+  // Loading
+  const saveBtn = document.getElementById('saveBtn');
+  saveBtn.innerHTML = '⏳ Menyimpan...';
+  saveBtn.disabled = true;
+
+  // Kirim ke Google Spreadsheet
+  let kirimBerhasil = false;
+  try {
+    const res = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(rec),
+    });
+    kirimBerhasil = true; // no-cors selalu resolve jika tidak ada network error
+  } catch(err) {
+    console.warn('Gagal kirim ke Google Sheets:', err);
+    showToast('⚠️ Koneksi bermasalah, data disimpan lokal', 'error');
+  }
+
+  // Simpan lokal
+  allData.push(rec);
+  try { localStorage.setItem('ckgData2026', JSON.stringify(allData)); } catch(e) {}
+
+  saveBtn.innerHTML = '💾 Simpan Data';
+  saveBtn.disabled = false;
+
+  // Tampilkan success screen, sembunyikan form & rekap
+  document.querySelectorAll('.step-content').forEach(el => el.style.display = 'none');
+  document.querySelector('.progress-wrap').style.display = 'none';
+  document.querySelector('.step-nav').style.display = 'none';
+  document.getElementById('successScreen').style.display = 'block';
+  document.getElementById('rekapSection').style.display = 'none';
+
+  showToast(kirimBerhasil ? 'Data berhasil dikirim ke Google Spreadsheet!' : 'Data tersimpan lokal, coba kirim ulang nanti', kirimBerhasil ? 'success' : 'info');
+}
+
+function addNew() {
+  // Reset form
+  document.querySelectorAll('.form-input,.form-select,.form-textarea').forEach(el => el.value = '');
+  fotoData = null;
+  removePhoto();
+
+  // Tampilkan kembali
+  document.getElementById('successScreen').style.display = 'none';
+  document.querySelector('.progress-wrap').style.display = 'block';
+  document.querySelector('.step-nav').style.display = 'flex';
+
+  currentStep = 1;
+  showStep(1);
+}
+
+// ── REKAP (admin) ──
+function renderRekap() {
+  document.getElementById('rekapCount').textContent = allData.length + ' data';
+  const fmtDate = s => { if (!s) return '-'; const d=new Date(s+'T00:00:00'); return d.toLocaleDateString('id-ID'); };
+  const tbody = document.getElementById('rekapTbody');
+
+  tbody.innerHTML = allData.map((d,i) => `
+    <tr>
+      <td><b>${i+1}</b></td>
+      <td style="min-width:150px"><b>${d.namaLengkap}</b></td>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:11px">${d.nik}</td>
+      <td>${d.satker}</td>
+      <td>${d.nipNrp}</td>
+      <td>${fmtDate(d.tanggalLahir)}</td>
+      <td>${d.jenisKelamin}</td>
+      <td>${d.noWa}</td>
+      <td>${d.statusNikah}</td>
+      <td>${d.pekerjaan}</td>
+      <td style="min-width:180px;font-size:11px">${d.alamat}</td>
+      <td>${d.statusNikahDemo}</td>
+      <td>${d.disabilitas}</td>
+      <td>${d.batukTB}</td>
+      <td>📷 ${d.namaFoto||'-'}</td>
+      <td><button class="del-btn" onclick="deleteRecord(${d.id})">Hapus</button></td>
+    </tr>`).join('');
+}
+
+function deleteRecord(id) {
+  if (!confirm('Hapus data ini?')) return;
+  allData = allData.filter(d => d.id !== id);
+  try { localStorage.setItem('ckgData2026', JSON.stringify(allData)); } catch(e) {}
+  renderRekap();
+}
+
+// ── EXPORT EXCEL ──
+function exportExcel() {
+  if (!allData.length) { showToast('Tidak ada data', 'error'); return; }
+  const headers = ['No','Nama Lengkap','NIK','Satker','NIP/NRP','Tanggal Lahir','Jenis Kelamin','No. WhatsApp','Status Nikah (Pendataan)','Pekerjaan','Alamat Domisili','Status Nikah (Demografi)','Status Disabilitas','Riwayat Batuk TB','Nama File Foto','Waktu Input'];
+  const fmtDate = s => { if(!s) return '-'; return new Date(s+'T00:00:00').toLocaleDateString('id-ID'); };
+  const rows = allData.map((d,i) => [i+1,d.namaLengkap,d.nik,d.satker,d.nipNrp,fmtDate(d.tanggalLahir),d.jenisKelamin,d.noWa,d.statusNikah,d.pekerjaan,d.alamat,d.statusNikahDemo,d.disabilitas,d.batukTB,d.namaFoto,new Date(d.timestamp).toLocaleString('id-ID')]);
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.aoa_to_sheet([headers,...rows]);
+  ws['!cols'] = [{wch:4},{wch:25},{wch:18},{wch:22},{wch:14},{wch:14},{wch:13},{wch:16},{wch:20},{wch:12},{wch:35},{wch:20},{wch:22},{wch:28},{wch:25},{wch:20}];
+  XLSX.utils.book_append_sheet(wb, ws, 'Data CKG 2026');
+  const now = new Date();
+  XLSX.writeFile(wb, `CKG_2026_${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}.xlsx`);
+  showToast('File Excel diunduh!', 'success');
+}
+
+// ── TOAST ──
+function showToast(msg, type='info') {
+  const icons = { success:'✅', error:'❌', info:'ℹ️' };
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<span>${icons[type]}</span><span>${msg}</span>`;
+  document.getElementById('toastContainer').appendChild(t);
+  setTimeout(() => t.remove(), 3500);
+}
+</script>
+</body>
+</html>
