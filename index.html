@@ -1002,10 +1002,47 @@
       </div>
 
       <!-- Demografi & Faktor Risiko -->
-      <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#0d9488;margin-bottom:10px;display:flex;align-items:center;gap:6px;">🏥 DEMOGRAFI & FAKTOR RISIKO</div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#0d9488;margin-bottom:10px;display:flex;align-items:center;gap:6px;">🏥 DEMOGRAFI</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;">
         <div id="d_disabilitas" class="detail-field"></div>
         <div id="d_batukTB" class="detail-field"></div>
+      </div>
+
+      <!-- Penyakit Hati -->
+      <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#f59e0b;margin-bottom:10px;display:flex;align-items:center;gap:6px;">🫀 PENYAKIT HATI</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;">
+        <div id="d_hepB_positif" class="detail-field"></div>
+        <div id="d_hepB_keluarga" class="detail-field"></div>
+        <div id="d_seksualBerisiko" class="detail-field"></div>
+        <div id="d_transfusiDarah" class="detail-field"></div>
+        <div id="d_hemodialisa" class="detail-field"></div>
+        <div id="d_narkoba" class="detail-field"></div>
+        <div id="d_odhiv" class="detail-field"></div>
+        <div id="d_hepC_gagal" class="detail-field"></div>
+        <div id="d_kolesterol" class="detail-field" style="grid-column:1/-1;"></div>
+      </div>
+
+      <!-- Kesehatan Jiwa -->
+      <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#7c3aed;margin-bottom:10px;display:flex;align-items:center;gap:6px;">🧠 KESEHATAN JIWA</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;">
+        <div id="d_jiwa_semangat" class="detail-field"></div>
+        <div id="d_jiwa_murung" class="detail-field"></div>
+      </div>
+
+      <!-- Merokok -->
+      <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#374151;margin-bottom:10px;display:flex;align-items:center;gap:6px;">🚬 SKRINING MEROKOK</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;">
+        <div id="d_merokok_aktif" class="detail-field"></div>
+        <div id="d_merokok_riwayat" class="detail-field"></div>
+      </div>
+
+      <!-- Pemeriksaan Kesehatan -->
+      <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#0d9488;margin-bottom:10px;display:flex;align-items:center;gap:6px;">🩺 PEMERIKSAAN KESEHATAN</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;">
+        <div id="d_beratBadan" class="detail-field"></div>
+        <div id="d_tinggiBadan" class="detail-field"></div>
+        <div id="d_hipertensi" class="detail-field"></div>
+        <div id="d_diabetes" class="detail-field"></div>
       </div>
 
       <!-- Foto -->
@@ -1501,10 +1538,28 @@ async function refreshAdminData() {
         pekerjaan: get(10),
         alamat: get(11),
         disabilitas: get(13),
-        batukTB: get(14),
-        linkFoto: get(16) !== '-' ? get(16) : null,
+        // Kolom baru sesuai urutan Apps Script
+        batukTB:         get(14),
+        hepB_positif:    get(15),
+        hepB_keluarga:   get(16),
+        seksualBerisiko: get(17),
+        transfusiDarah:  get(18),
+        hemodialisa:     get(19),
+        narkoba:         get(20),
+        odhiv:           get(21),
+        hepC_gagal:      get(22),
+        kolesterol:      get(23),
+        jiwa_semangat:   get(24),
+        jiwa_murung:     get(25),
+        merokok_aktif:   get(26),
+        merokok_riwayat: get(27),
+        beratBadan:      get(28),
+        tinggiBadan:     get(29),
+        hipertensi:      get(30),
+        diabetes:        get(31),
+        linkFoto:        get(33) !== '-' ? get(33) : null,
       };
-    }).filter(d => d.nama !== '-' && d.nama !== 'Nama Lengkap'); // skip header row if any
+    }).filter(d => d.nama !== '-' && d.nama !== 'Nama Lengkap');
 
     renderAdminStats();
     populateSatkerFilter();
@@ -1624,6 +1679,31 @@ function showDetailModal(idx) {
   document.getElementById('d_alamat').innerHTML = field('Alamat Domisili', d.alamat);
   document.getElementById('d_disabilitas').innerHTML = field('Status Disabilitas', d.disabilitas);
   document.getElementById('d_batukTB').innerHTML = field('Riwayat Batuk TB', d.batukTB);
+
+  // Penyakit Hati
+  document.getElementById('d_hepB_positif').innerHTML = field('Hep B Positif', d.hepB_positif);
+  document.getElementById('d_hepB_keluarga').innerHTML = field('Keluarga Hep B', d.hepB_keluarga);
+  document.getElementById('d_seksualBerisiko').innerHTML = field('Seksual Berisiko', d.seksualBerisiko);
+  document.getElementById('d_transfusiDarah').innerHTML = field('Transfusi Darah', d.transfusiDarah);
+  document.getElementById('d_hemodialisa').innerHTML = field('Hemodialisa', d.hemodialisa);
+  document.getElementById('d_narkoba').innerHTML = field('Narkoba/Adiktif', d.narkoba);
+  document.getElementById('d_odhiv').innerHTML = field('ODHIV', d.odhiv);
+  document.getElementById('d_hepC_gagal').innerHTML = field('Hep C Gagal Obat', d.hepC_gagal);
+  document.getElementById('d_kolesterol').innerHTML = field('Kolesterol Tinggi', d.kolesterol);
+
+  // Kesehatan Jiwa
+  document.getElementById('d_jiwa_semangat').innerHTML = field('Tidak Bersemangat', d.jiwa_semangat);
+  document.getElementById('d_jiwa_murung').innerHTML = field('Murung/Tertekan', d.jiwa_murung);
+
+  // Merokok
+  document.getElementById('d_merokok_aktif').innerHTML = field('Merokok Aktif', d.merokok_aktif);
+  document.getElementById('d_merokok_riwayat').innerHTML = field('Riwayat Merokok', d.merokok_riwayat);
+
+  // Pemeriksaan Kesehatan
+  document.getElementById('d_beratBadan').innerHTML = field('Berat Badan', d.beratBadan ? d.beratBadan + ' kg' : '-');
+  document.getElementById('d_tinggiBadan').innerHTML = field('Tinggi Badan', d.tinggiBadan ? d.tinggiBadan + ' cm' : '-');
+  document.getElementById('d_hipertensi').innerHTML = field('Hipertensi', d.hipertensi);
+  document.getElementById('d_diabetes').innerHTML = field('Diabetes', d.diabetes);
   document.getElementById('d_timestamp').textContent = d.timestamp;
 
   // Foto
