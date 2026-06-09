@@ -354,7 +354,7 @@
     <button class="step-btn" id="sb3" onclick="goToStep(3)"><span class="step-num">3</span><span>Demografi</span></button>
     <button class="step-btn" id="sb4" onclick="goToStep(4)"><span class="step-num">4</span><span>Faktor Risiko</span></button>
     <button class="step-btn" id="sb5" onclick="goToStep(5)"><span class="step-num">5</span><span>Pemeriksaan</span></button>
-    <button class="step-btn" id="sb6" onclick="goToStep(6)"><span class="step-num">6</span><span>Simpan</span></button>
+    <button class="step-btn" id="sb6" onclick="goToStep(6)"><span class="step-num">6</span><span>Foto & Simpan</span></button>
   </div>
 
   <!-- ═══ STEP 1: IDENTITAS ═══ -->
@@ -481,30 +481,6 @@
               <option>ASN Polri</option>
             </select>
             <span class="error-msg" id="err-pekerjaan">Pekerjaan wajib dipilih</span>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Kelurahan <span class="req">*</span></label>
-            <input type="text" class="form-input" id="kelurahan" placeholder="Masukkan nama kelurahan">
-            <span class="error-msg" id="err-kelurahan">Kelurahan wajib diisi</span>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Kecamatan <span class="req">*</span></label>
-            <input type="text" class="form-input" id="kecamatan" placeholder="Masukkan nama kecamatan">
-            <span class="error-msg" id="err-kecamatan">Kecamatan wajib diisi</span>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Kota / Kabupaten <span class="req">*</span></label>
-            <input type="text" class="form-input" id="kotaKab" placeholder="Contoh: Kota Mataram">
-            <span class="error-msg" id="err-kotaKab">Kota/Kabupaten wajib diisi</span>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Provinsi <span class="req">*</span></label>
-            <input type="text" class="form-input" id="provinsi" placeholder="Contoh: Nusa Tenggara Barat">
-            <span class="error-msg" id="err-provinsi">Provinsi wajib diisi</span>
           </div>
 
           <div class="form-group full">
@@ -827,7 +803,7 @@
     </div>
   </div>
 
-  <!-- ═══ STEP 6: SIMPAN ═══ -->
+  <!-- ═══ STEP 6: FOTO & SIMPAN ═══ -->
   <div id="step6" class="step-content" style="display:none">
 
     <!-- Ringkasan -->
@@ -837,6 +813,30 @@
         <div><h2>Ringkasan Data</h2><p>Periksa kembali sebelum menyimpan</p></div>
       </div>
       <div class="card-body" id="summaryContent"></div>
+    </div>
+
+    <!-- Upload Foto KTP -->
+    <div class="card">
+      <div class="card-header amber">
+        <div class="card-icon ci-amber">📷</div>
+        <div><h2>Foto KTP</h2><p>Ambil foto KTP atau pilih dari galeri (wajib diisi)</p></div>
+      </div>
+      <div class="card-body">
+        <div class="photo-dropzone" id="dropzone">
+          <input type="file" id="fotoInput" accept="image/*" capture="environment">
+          <div class="dz-icon">📸</div>
+          <h3>Ambil Foto / Pilih dari Galeri</h3>
+          <p>Tap untuk membuka kamera atau pilih foto KTP dari galeri</p>
+        </div>
+        <div class="photo-preview" id="photoPreview" style="display:none">
+          <div class="photo-thumb-single" id="photoThumb">
+            <img id="photoImg" src="" alt="Foto KTP">
+            <button class="rm-btn-single" onclick="removePhoto()">✕ Hapus</button>
+          </div>
+          <p class="photo-name-label" id="photoNameLabel"></p>
+        </div>
+        <span class="error-msg" id="err-foto" style="margin-top:8px">Foto KTP wajib dilampirkan</span>
+      </div>
     </div>
 
     <div class="nav-btns">
@@ -998,10 +998,6 @@
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;">
         <div id="d_statusNikah" class="detail-field"></div>
         <div id="d_pekerjaan" class="detail-field"></div>
-        <div id="d_kelurahan" class="detail-field"></div>
-        <div id="d_kecamatan" class="detail-field"></div>
-        <div id="d_kotaKab" class="detail-field"></div>
-        <div id="d_provinsi" class="detail-field"></div>
         <div id="d_alamat" class="detail-field" style="grid-column:1/-1;"></div>
       </div>
 
@@ -1051,28 +1047,7 @@
 
       <!-- Foto -->
       <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#0d9488;margin-bottom:10px;display:flex;align-items:center;gap:6px;">📷 FOTO KTP</div>
-      <div id="d_foto" style="margin-bottom:18px;"></div>
-
-      <!-- Input Petugas -->
-      <div style="border-top:2px dashed #e2e8f0;padding-top:18px;margin-bottom:10px;">
-        <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#dc2626;margin-bottom:12px;display:flex;align-items:center;gap:6px;">🩺 INPUT TENSI PESERTA <span style="font-size:10px;background:#fee2e2;color:#dc2626;padding:2px 8px;border-radius:20px;font-weight:700;">PETUGAS</span></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px;">
-          <div>
-            <div style="font-size:11px;font-weight:700;color:#64748b;margin-bottom:5px;">1. Tensi (mmHg)</div>
-            <input type="text" id="input_tensi" placeholder="Contoh: 120/80" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:inherit;font-size:13px;outline:none;" onfocus="this.style.borderColor='#0d9488'" onblur="this.style.borderColor='#e2e8f0'">
-          </div>
-          <div>
-            <div style="font-size:11px;font-weight:700;color:#64748b;margin-bottom:5px;">2. Gula Darah (mg/dL)</div>
-            <input type="number" id="input_gulaDarah" placeholder="Contoh: 95" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:inherit;font-size:13px;outline:none;" onfocus="this.style.borderColor='#0d9488'" onblur="this.style.borderColor='#e2e8f0'">
-          </div>
-          <div>
-            <div style="font-size:11px;font-weight:700;color:#64748b;margin-bottom:5px;">3. Kolesterol (mg/dL)</div>
-            <input type="number" id="input_kolesterol" placeholder="Contoh: 180" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:inherit;font-size:13px;outline:none;" onfocus="this.style.borderColor='#0d9488'" onblur="this.style.borderColor='#e2e8f0'">
-          </div>
-        </div>
-        <div id="tensiSaveStatus" style="font-size:12px;color:#64748b;margin-bottom:8px;min-height:18px;"></div>
-        <button onclick="saveTensiData()" style="width:100%;padding:11px;border-radius:10px;border:none;background:#dc2626;color:#fff;font-family:inherit;font-weight:700;font-size:13px;cursor:pointer;">💾 Simpan Data Tensi</button>
-      </div>
+      <div id="d_foto" style="margin-bottom:10px;"></div>
 
       <!-- Timestamp -->
       <div style="border-top:1px solid #f1f5f9;padding-top:12px;font-size:11px;color:#94a3b8;text-align:right;">
@@ -1115,7 +1090,7 @@ const STEPS = [
   { label: 'Demografi',               pct: 50 },
   { label: 'Faktor Risiko',           pct: 67 },
   { label: 'Pemeriksaan Kesehatan',   pct: 83 },
-  { label: 'Simpan Data',             pct: 100 },
+  { label: 'Foto & Simpan',           pct: 100 },
 ];
 
 let currentStep = 1;
@@ -1194,7 +1169,7 @@ function validateStep(step) {
   }
 
   if (step === 2) {
-    ['statusNikah','pekerjaan','kelurahan','kecamatan','kotaKab','provinsi','alamat'].forEach(id => {
+    ['statusNikah','pekerjaan','alamat'].forEach(id => {
       if (!document.getElementById(id).value.trim()) { markErr(id); ok = false; }
     });
   }
@@ -1266,10 +1241,6 @@ function buildSummary() {
       <div class="summary-grid">
         <div class="s-item"><div class="s-lbl">Status Pernikahan</div><div class="s-val">${g('statusNikah')}</div></div>
         <div class="s-item"><div class="s-lbl">Pekerjaan</div><div class="s-val">${g('pekerjaan')}</div></div>
-        <div class="s-item"><div class="s-lbl">Kelurahan</div><div class="s-val">${g('kelurahan')}</div></div>
-        <div class="s-item"><div class="s-lbl">Kecamatan</div><div class="s-val">${g('kecamatan')}</div></div>
-        <div class="s-item"><div class="s-lbl">Kota/Kabupaten</div><div class="s-val">${g('kotaKab')}</div></div>
-        <div class="s-item"><div class="s-lbl">Provinsi</div><div class="s-val">${g('provinsi')}</div></div>
         <div class="s-item full"><div class="s-lbl">Alamat Domisili</div><div class="s-val">${g('alamat')}</div></div>
       </div>
     </div>
@@ -1327,6 +1298,13 @@ function buildSummary() {
 
 // ── SUBMIT ──
 async function submitData() {
+  // Validasi foto wajib
+  if (!fotoData) {
+    document.getElementById('err-foto').classList.add('show');
+    showToast('Foto KTP wajib dilampirkan', 'error');
+    return;
+  }
+
   const g = id => document.getElementById(id)?.value || '';
 
   const rec = {
@@ -1341,10 +1319,6 @@ async function submitData() {
     noWa: g('noWa'),
     statusNikah: g('statusNikah'),
     pekerjaan: g('pekerjaan'),
-    kelurahan: g('kelurahan'),
-    kecamatan: g('kecamatan'),
-    kotaKab: g('kotaKab'),
-    provinsi: g('provinsi'),
     alamat: g('alamat'),
     statusNikahDemo: g('statusNikahDemo'),
     disabilitas: g('disabilitas'),
@@ -1366,6 +1340,9 @@ async function submitData() {
     tinggiBadan: g('tinggiBadan'),
     hipertensi: g('hipertensi'),
     diabetes: g('diabetes'),
+    jumlahFoto: 1,
+    namaFoto: fotoData.name,
+    fotoBase64: fotoData.dataUrl,
   };
 
   // Loading
@@ -1559,36 +1536,28 @@ async function refreshAdminData() {
         noWa: get(8),
         statusNikah: get(9),
         pekerjaan: get(10),
-        kelurahan: get(11),
-        kecamatan: get(12),
-        kotaKab: get(13),
-        provinsi: get(14),
-        alamat: get(15),
-        disabilitas: get(17),
-        // Faktor Risiko
-        batukTB:         get(18),
-        hepB_positif:    get(19),
-        hepB_keluarga:   get(20),
-        seksualBerisiko: get(21),
-        transfusiDarah:  get(22),
-        hemodialisa:     get(23),
-        narkoba:         get(24),
-        odhiv:           get(25),
-        hepC_gagal:      get(26),
-        kolesterol:      get(27),
-        jiwa_semangat:   get(28),
-        jiwa_murung:     get(29),
-        merokok_aktif:   get(30),
-        merokok_riwayat: get(31),
-        beratBadan:      get(32),
-        tinggiBadan:     get(33),
-        hipertensi:      get(34),
-        diabetes:        get(35),
-        // Hasil pemeriksaan petugas
-        tensi:           get(36),
-        gulaDarah:       get(37),
-        kolesteralHasil: get(38),
-        linkFoto:        null,
+        alamat: get(11),
+        disabilitas: get(13),
+        // Kolom baru sesuai urutan Apps Script
+        batukTB:         get(14),
+        hepB_positif:    get(15),
+        hepB_keluarga:   get(16),
+        seksualBerisiko: get(17),
+        transfusiDarah:  get(18),
+        hemodialisa:     get(19),
+        narkoba:         get(20),
+        odhiv:           get(21),
+        hepC_gagal:      get(22),
+        kolesterol:      get(23),
+        jiwa_semangat:   get(24),
+        jiwa_murung:     get(25),
+        merokok_aktif:   get(26),
+        merokok_riwayat: get(27),
+        beratBadan:      get(28),
+        tinggiBadan:     get(29),
+        hipertensi:      get(30),
+        diabetes:        get(31),
+        linkFoto:        get(33) !== '-' ? get(33) : null,
       };
     }).filter(d => d.nama !== '-' && d.nama !== 'Nama Lengkap');
 
@@ -1707,10 +1676,6 @@ function showDetailModal(idx) {
   document.getElementById('d_noWa').innerHTML = field('No. WhatsApp', d.noWa);
   document.getElementById('d_statusNikah').innerHTML = field('Status Nikah', d.statusNikah);
   document.getElementById('d_pekerjaan').innerHTML = field('Pekerjaan', d.pekerjaan);
-  document.getElementById('d_kelurahan').innerHTML = field('Kelurahan', d.kelurahan);
-  document.getElementById('d_kecamatan').innerHTML = field('Kecamatan', d.kecamatan);
-  document.getElementById('d_kotaKab').innerHTML = field('Kota / Kabupaten', d.kotaKab);
-  document.getElementById('d_provinsi').innerHTML = field('Provinsi', d.provinsi);
   document.getElementById('d_alamat').innerHTML = field('Alamat Domisili', d.alamat);
   document.getElementById('d_disabilitas').innerHTML = field('Status Disabilitas', d.disabilitas);
   document.getElementById('d_batukTB').innerHTML = field('Riwayat Batuk TB', d.batukTB);
@@ -1749,14 +1714,6 @@ function showDetailModal(idx) {
     fotoEl.innerHTML = `<div style="background:#f8fafc;border:1.5px dashed #cbd5e1;border-radius:10px;padding:16px;text-align:center;color:#94a3b8;font-size:13px;">Tidak ada foto tersimpan</div>`;
   }
 
-  // Pre-fill tensi jika sudah pernah diisi
-  document.getElementById('input_tensi').value = d.tensi || '';
-  document.getElementById('input_gulaDarah').value = d.gulaDarah || '';
-  document.getElementById('input_kolesterol').value = d.kolesteralHasil || '';
-  document.getElementById('tensiSaveStatus').textContent = '';
-  // Simpan nik aktif untuk digunakan saat save
-  document.getElementById('detailModal').dataset.activeNik = d.nik;
-
   const modal = document.getElementById('detailModal');
   modal.style.display = 'flex';
 }
@@ -1772,46 +1729,6 @@ document.addEventListener('click', function(e) {
   const adminModal = document.getElementById('adminModal');
   if (e.target === adminModal) closeAdminModal();
 });
-
-async function saveTensiData() {
-  const nik = document.getElementById('detailModal').dataset.activeNik;
-  const tensi = document.getElementById('input_tensi').value.trim();
-  const gulaDarah = document.getElementById('input_gulaDarah').value.trim();
-  const kolesteralHasil = document.getElementById('input_kolesterol').value.trim();
-  const statusEl = document.getElementById('tensiSaveStatus');
-
-  if (!tensi && !gulaDarah && !kolesteralHasil) {
-    statusEl.style.color = '#ef4444';
-    statusEl.textContent = '⚠️ Minimal satu field harus diisi';
-    return;
-  }
-
-  statusEl.style.color = '#64748b';
-  statusEl.textContent = '⏳ Menyimpan...';
-
-  // Kirim ke Apps Script
-  try {
-    await fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ _action: 'updateTensi', nik, tensi, gulaDarah, kolesteralHasil }),
-    });
-    // Update data lokal di adminRawData
-    const idx = adminRawData.findIndex(d => d.nik === nik);
-    if (idx !== -1) {
-      adminRawData[idx].tensi = tensi;
-      adminRawData[idx].gulaDarah = gulaDarah;
-      adminRawData[idx].kolesteralHasil = kolesteralHasil;
-    }
-    statusEl.style.color = '#16a34a';
-    statusEl.textContent = '✅ Data berhasil disimpan!';
-    showToast('Data tensi berhasil disimpan', 'success');
-  } catch(err) {
-    statusEl.style.color = '#ef4444';
-    statusEl.textContent = '❌ Gagal menyimpan, coba lagi';
-  }
-}
 
 function exportAdminExcel() {
   if (!adminRawData.length) { showToast('Tidak ada data untuk diexport', 'error'); return; }
