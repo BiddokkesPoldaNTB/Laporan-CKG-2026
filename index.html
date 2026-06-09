@@ -353,7 +353,8 @@
     <button class="step-btn" id="sb2" onclick="goToStep(2)"><span class="step-num">2</span><span>Pendataan</span></button>
     <button class="step-btn" id="sb3" onclick="goToStep(3)"><span class="step-num">3</span><span>Demografi</span></button>
     <button class="step-btn" id="sb4" onclick="goToStep(4)"><span class="step-num">4</span><span>Faktor Risiko</span></button>
-    <button class="step-btn" id="sb5" onclick="goToStep(5)"><span class="step-num">5</span><span>Foto & Simpan</span></button>
+    <button class="step-btn" id="sb5" onclick="goToStep(5)"><span class="step-num">5</span><span>Pemeriksaan</span></button>
+    <button class="step-btn" id="sb6" onclick="goToStep(6)"><span class="step-num">6</span><span>Foto & Simpan</span></button>
   </div>
 
   <!-- ═══ STEP 1: IDENTITAS ═══ -->
@@ -538,8 +539,10 @@
     </div>
   </div>
 
-  <!-- ═══ STEP 4: FAKTOR RISIKO TB ═══ -->
+  <!-- ═══ STEP 4: FAKTOR RISIKO ═══ -->
   <div id="step4" class="step-content" style="display:none">
+
+    <!-- Faktor Risiko TB -->
     <div class="card">
       <div class="card-header red">
         <div class="card-icon ci-red">🫁</div>
@@ -547,7 +550,6 @@
       </div>
       <div class="card-body">
         <div class="form-grid">
-
           <div class="form-group full">
             <label class="form-label">Apakah Anda pernah atau sedang mengalami batuk yang tidak sembuh-sembuh? <span class="req">*</span></label>
             <select class="form-select" id="batukTB">
@@ -558,18 +560,251 @@
             </select>
             <span class="error-msg" id="err-batukTB">Pertanyaan ini wajib dijawab</span>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Penyakit Hati -->
+    <div class="card" style="margin-top:16px">
+      <div class="card-header amber">
+        <div class="card-icon ci-amber">🫀</div>
+        <div><h2>Penyakit Hati</h2><p>Skrining risiko Hepatitis dan penyakit hati</p></div>
+      </div>
+      <div class="card-body">
+        <div class="form-grid">
+
+          <div class="form-group full">
+            <label class="form-label">1. Apakah Anda pernah menjalani tes untuk Hepatitis B dan mendapatkan hasil Positif? <span class="req">*</span></label>
+            <select class="form-select" id="hepB_positif">
+              <option value="">— Pilih Jawaban —</option>
+              <option>Ya</option><option>Tidak</option>
+            </select>
+            <span class="error-msg" id="err-hepB_positif">Pertanyaan ini wajib dijawab</span>
+          </div>
+
+          <div class="form-group full">
+            <label class="form-label">2. Apakah Anda memiliki ibu kandung/saudara sekandung yang menderita Hepatitis B? <span class="req">*</span></label>
+            <select class="form-select" id="hepB_keluarga">
+              <option value="">— Pilih Jawaban —</option>
+              <option>Ya</option><option>Tidak</option>
+            </select>
+            <span class="error-msg" id="err-hepB_keluarga">Pertanyaan ini wajib dijawab</span>
+          </div>
+
+          <div class="form-group full">
+            <label class="form-label">3. Apakah Anda pernah berhubungan seksual berisiko/tanpa pengaman dengan bukan pasangan suami/istri? <span class="req">*</span></label>
+            <select class="form-select" id="seksualBerisiko">
+              <option value="">— Pilih Jawaban —</option>
+              <option>Ya</option><option>Tidak</option>
+            </select>
+            <span class="error-msg" id="err-seksualBerisiko">Pertanyaan ini wajib dijawab</span>
+          </div>
+
+          <div class="form-group full">
+            <label class="form-label">4. Apakah Anda pernah menerima transfusi darah sebelumnya? <span class="req">*</span></label>
+            <select class="form-select" id="transfusiDarah">
+              <option value="">— Pilih Jawaban —</option>
+              <option>Ya</option><option>Tidak</option>
+            </select>
+            <span class="error-msg" id="err-transfusiDarah">Pertanyaan ini wajib dijawab</span>
+          </div>
+
+          <div class="form-group full">
+            <label class="form-label">5. Apakah Anda pernah menjalani cuci darah atau hemodialisa? <span class="req">*</span></label>
+            <select class="form-select" id="hemodialisa">
+              <option value="">— Pilih Jawaban —</option>
+              <option>Ya</option><option>Tidak</option>
+            </select>
+            <span class="error-msg" id="err-hemodialisa">Pertanyaan ini wajib dijawab</span>
+          </div>
+
+          <div class="form-group full">
+            <label class="form-label">6. Apakah Anda pernah menggunakan narkoba atau bahan adiktif lainnya? <span class="req">*</span></label>
+            <select class="form-select" id="narkoba">
+              <option value="">— Pilih Jawaban —</option>
+              <option>Ya</option><option>Tidak</option>
+            </select>
+            <span class="error-msg" id="err-narkoba">Pertanyaan ini wajib dijawab</span>
+          </div>
+
+          <div class="form-group full">
+            <label class="form-label">7. Apakah Anda adalah Orang dengan HIV (ODHIV)? <span class="req">*</span></label>
+            <select class="form-select" id="odhiv">
+              <option value="">— Pilih Jawaban —</option>
+              <option>Ya</option><option>Tidak</option>
+            </select>
+            <span class="error-msg" id="err-odhiv">Pertanyaan ini wajib dijawab</span>
+          </div>
+
+          <div class="form-group full">
+            <label class="form-label">8. Apakah Anda pernah mendapatkan pengobatan Hepatitis C dan tidak sembuh? <span class="req">*</span></label>
+            <select class="form-select" id="hepC_gagal">
+              <option value="">— Pilih Jawaban —</option>
+              <option>Ya</option><option>Tidak</option>
+            </select>
+            <span class="error-msg" id="err-hepC_gagal">Pertanyaan ini wajib dijawab</span>
+          </div>
+
+          <div class="form-group full">
+            <label class="form-label">9. Apakah Anda pernah didiagnosa atau mendapatkan hasil pemeriksaan kolesterol (lemak darah) tinggi? <span class="req">*</span></label>
+            <select class="form-select" id="kolesterol">
+              <option value="">— Pilih Jawaban —</option>
+              <option>Ya</option><option>Tidak</option>
+            </select>
+            <span class="error-msg" id="err-kolesterol">Pertanyaan ini wajib dijawab</span>
+          </div>
 
         </div>
       </div>
     </div>
+
+    <!-- Kesehatan Jiwa -->
+    <div class="card" style="margin-top:16px">
+      <div class="card-header" style="background:linear-gradient(135deg,#7c3aed,#a855f7);">
+        <div class="card-icon" style="background:rgba(255,255,255,0.15);border-radius:12px;padding:10px;font-size:22px;">🧠</div>
+        <div><h2 style="color:#fff">Kesehatan Jiwa</h2><p style="color:rgba(255,255,255,0.75)">Skrining kesehatan mental</p></div>
+      </div>
+      <div class="card-body">
+        <div class="form-grid">
+
+          <div class="form-group full">
+            <label class="form-label">1. Dalam 2 minggu terakhir, seberapa sering Anda kurang/tidak bersemangat dalam melakukan kegiatan sehari-hari? <span class="req">*</span></label>
+            <select class="form-select" id="jiwa_semangat">
+              <option value="">— Pilih Jawaban —</option>
+              <option>Tidak sama sekali</option>
+              <option>Kurang dari 1 minggu</option>
+              <option>Lebih dari 1 minggu</option>
+              <option>Hampir setiap hari</option>
+            </select>
+            <span class="error-msg" id="err-jiwa_semangat">Pertanyaan ini wajib dijawab</span>
+          </div>
+
+          <div class="form-group full">
+            <label class="form-label">2. Dalam 2 minggu terakhir, seberapa sering Anda merasa murung, tertekan, atau putus asa? <span class="req">*</span></label>
+            <select class="form-select" id="jiwa_murung">
+              <option value="">— Pilih Jawaban —</option>
+              <option>Tidak sama sekali</option>
+              <option>Kurang dari 1 minggu</option>
+              <option>Lebih dari 1 minggu</option>
+              <option>Hampir setiap hari</option>
+            </select>
+            <span class="error-msg" id="err-jiwa_murung">Pertanyaan ini wajib dijawab</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Skrining Merokok -->
+    <div class="card" style="margin-top:16px">
+      <div class="card-header" style="background:linear-gradient(135deg,#374151,#6b7280);">
+        <div class="card-icon" style="background:rgba(255,255,255,0.15);border-radius:12px;padding:10px;font-size:22px;">🚬</div>
+        <div><h2 style="color:#fff">Skrining Merokok</h2><p style="color:rgba(255,255,255,0.75)">Riwayat kebiasaan merokok</p></div>
+      </div>
+      <div class="card-body">
+        <div class="form-grid">
+
+          <div class="form-group full">
+            <label class="form-label">1. Apakah Anda merokok dalam setahun terakhir ini? <span class="req">*</span></label>
+            <select class="form-select" id="merokok_aktif">
+              <option value="">— Pilih Jawaban —</option>
+              <option>Ya</option><option>Tidak</option>
+            </select>
+            <span class="error-msg" id="err-merokok_aktif">Pertanyaan ini wajib dijawab</span>
+          </div>
+
+          <div class="form-group full">
+            <label class="form-label">2. Apakah Anda pernah merokok sebelumnya? <span class="req">*</span></label>
+            <select class="form-select" id="merokok_riwayat">
+              <option value="">— Pilih Jawaban —</option>
+              <option>Ya</option><option>Tidak</option>
+            </select>
+            <span class="error-msg" id="err-merokok_riwayat">Pertanyaan ini wajib dijawab</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
     <div class="nav-btns">
       <button class="btn btn-outline" onclick="prevStep(4)">← Kembali</button>
       <button class="btn btn-primary" onclick="nextStep(4)">Selanjutnya →</button>
     </div>
   </div>
 
-  <!-- ═══ STEP 5: FOTO & SIMPAN ═══ -->
+  <!-- ═══ STEP 5: PEMERIKSAAN KESEHATAN ═══ -->
   <div id="step5" class="step-content" style="display:none">
+
+    <!-- Gizi -->
+    <div class="card">
+      <div class="card-header teal">
+        <div class="card-icon ci-teal">⚖️</div>
+        <div><h2>Gizi (BB & TB)</h2><p>Data berat badan dan tinggi badan</p></div>
+      </div>
+      <div class="card-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">1. Berat Badan (kg) <span class="req">*</span></label>
+            <input type="number" class="form-input" id="beratBadan" placeholder="Contoh: 65" min="1" max="300">
+            <span class="error-msg" id="err-beratBadan">Wajib diisi</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">2. Tinggi Badan (cm) <span class="req">*</span></label>
+            <input type="number" class="form-input" id="tinggiBadan" placeholder="Contoh: 165" min="1" max="300">
+            <span class="error-msg" id="err-tinggiBadan">Wajib diisi</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Skrining Darah Tinggi -->
+    <div class="card" style="margin-top:16px">
+      <div class="card-header red">
+        <div class="card-icon ci-red">💉</div>
+        <div><h2>Skrining Darah Tinggi</h2><p>Riwayat tekanan darah tinggi / hipertensi</p></div>
+      </div>
+      <div class="card-body">
+        <div class="form-grid">
+          <div class="form-group full">
+            <label class="form-label">Apakah Anda pernah dinyatakan tekanan darah tinggi (hipertensi)? <span class="req">*</span></label>
+            <select class="form-select" id="hipertensi">
+              <option value="">— Pilih Jawaban —</option>
+              <option>Ya</option><option>Tidak</option>
+            </select>
+            <span class="error-msg" id="err-hipertensi">Pertanyaan ini wajib dijawab</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pemeriksaan Gula Darah -->
+    <div class="card" style="margin-top:16px">
+      <div class="card-header amber">
+        <div class="card-icon ci-amber">🩸</div>
+        <div><h2>Pemeriksaan Gula Darah</h2><p>Riwayat diabetes / kencing manis</p></div>
+      </div>
+      <div class="card-body">
+        <div class="form-grid">
+          <div class="form-group full">
+            <label class="form-label">1. Apakah Anda pernah dinyatakan Diabetes atau kencing manis? <span class="req">*</span></label>
+            <select class="form-select" id="diabetes">
+              <option value="">— Pilih Jawaban —</option>
+              <option>Ya</option><option>Tidak</option>
+            </select>
+            <span class="error-msg" id="err-diabetes">Pertanyaan ini wajib dijawab</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn btn-outline" onclick="prevStep(5)">← Kembali</button>
+      <button class="btn btn-primary" onclick="nextStep(5)">Selanjutnya →</button>
+    </div>
+  </div>
+
+  <!-- ═══ STEP 6: FOTO & SIMPAN ═══ -->
+  <div id="step6" class="step-content" style="display:none">
 
     <!-- Ringkasan -->
     <div class="card">
@@ -605,7 +840,7 @@
     </div>
 
     <div class="nav-btns">
-      <button class="btn btn-outline" onclick="prevStep(5)">← Edit Data</button>
+      <button class="btn btn-outline" onclick="prevStep(6)">← Edit Data</button>
       <button class="btn btn-success" id="saveBtn" onclick="submitData()">💾 Simpan Data</button>
     </div>
   </div>
@@ -813,11 +1048,12 @@ const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbws6sePeXA_4TP2
 
 const STEPS = [
   null,
-  { label: 'Identitas Peserta',   pct: 20 },
-  { label: 'Formulir Pendataan',  pct: 40 },
-  { label: 'Demografi',           pct: 60 },
-  { label: 'Faktor Risiko TB',    pct: 80 },
-  { label: 'Foto & Simpan',       pct: 100 },
+  { label: 'Identitas Peserta',       pct: 17 },
+  { label: 'Formulir Pendataan',      pct: 33 },
+  { label: 'Demografi',               pct: 50 },
+  { label: 'Faktor Risiko',           pct: 67 },
+  { label: 'Pemeriksaan Kesehatan',   pct: 83 },
+  { label: 'Foto & Simpan',           pct: 100 },
 ];
 
 let currentStep = 1;
@@ -847,7 +1083,7 @@ function nextStep(n) {
   if (!validateStep(n)) return;
   currentStep = n + 1;
   showStep(n + 1);
-  if (n + 1 === 5) buildSummary();
+  if (n + 1 === 6) buildSummary();
 }
 
 function prevStep(n) { currentStep = n - 1; showStep(n - 1); }
@@ -866,7 +1102,7 @@ function showStep(n) {
   const info = STEPS[n];
   document.getElementById('progressFill').style.width = info.pct + '%';
   document.getElementById('progressPct').textContent = info.pct + '%';
-  document.getElementById('progressLabel').textContent = `Langkah ${n} dari 5 · ${info.label}`;
+  document.getElementById('progressLabel').textContent = `Langkah ${n} dari 6 · ${info.label}`;
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -908,7 +1144,15 @@ function validateStep(step) {
   }
 
   if (step === 4) {
-    if (!document.getElementById('batukTB').value) { markErr('batukTB'); ok = false; }
+    ['batukTB','hepB_positif','hepB_keluarga','seksualBerisiko','transfusiDarah','hemodialisa','narkoba','odhiv','hepC_gagal','kolesterol','jiwa_semangat','jiwa_murung','merokok_aktif','merokok_riwayat'].forEach(id => {
+      if (!document.getElementById(id).value) { markErr(id); ok = false; }
+    });
+  }
+
+  if (step === 5) {
+    ['beratBadan','tinggiBadan','hipertensi','diabetes'].forEach(id => {
+      if (!document.getElementById(id).value) { markErr(id); ok = false; }
+    });
   }
 
   if (!ok) showToast('Mohon lengkapi semua field yang wajib diisi', 'error');
@@ -975,6 +1219,43 @@ function buildSummary() {
       <div class="summary-grid">
         <div class="s-item full"><div class="s-lbl">Riwayat Batuk</div><div class="s-val">${g('batukTB')}</div></div>
       </div>
+    </div>
+    <div class="summary-block">
+      <div class="summary-block-title">Penyakit Hati</div>
+      <div class="summary-grid">
+        <div class="s-item"><div class="s-lbl">Hepatitis B Positif</div><div class="s-val">${g('hepB_positif')}</div></div>
+        <div class="s-item"><div class="s-lbl">Keluarga Hep B</div><div class="s-val">${g('hepB_keluarga')}</div></div>
+        <div class="s-item"><div class="s-lbl">Seksual Berisiko</div><div class="s-val">${g('seksualBerisiko')}</div></div>
+        <div class="s-item"><div class="s-lbl">Transfusi Darah</div><div class="s-val">${g('transfusiDarah')}</div></div>
+        <div class="s-item"><div class="s-lbl">Hemodialisa</div><div class="s-val">${g('hemodialisa')}</div></div>
+        <div class="s-item"><div class="s-lbl">Narkoba</div><div class="s-val">${g('narkoba')}</div></div>
+        <div class="s-item"><div class="s-lbl">ODHIV</div><div class="s-val">${g('odhiv')}</div></div>
+        <div class="s-item"><div class="s-lbl">Hep C Gagal Obat</div><div class="s-val">${g('hepC_gagal')}</div></div>
+        <div class="s-item full"><div class="s-lbl">Kolesterol Tinggi</div><div class="s-val">${g('kolesterol')}</div></div>
+      </div>
+    </div>
+    <div class="summary-block">
+      <div class="summary-block-title">Kesehatan Jiwa</div>
+      <div class="summary-grid">
+        <div class="s-item"><div class="s-lbl">Tidak Bersemangat</div><div class="s-val">${g('jiwa_semangat')}</div></div>
+        <div class="s-item"><div class="s-lbl">Murung/Tertekan</div><div class="s-val">${g('jiwa_murung')}</div></div>
+      </div>
+    </div>
+    <div class="summary-block">
+      <div class="summary-block-title">Skrining Merokok</div>
+      <div class="summary-grid">
+        <div class="s-item"><div class="s-lbl">Merokok Aktif</div><div class="s-val">${g('merokok_aktif')}</div></div>
+        <div class="s-item"><div class="s-lbl">Riwayat Merokok</div><div class="s-val">${g('merokok_riwayat')}</div></div>
+      </div>
+    </div>
+    <div class="summary-block">
+      <div class="summary-block-title">Pemeriksaan Kesehatan</div>
+      <div class="summary-grid">
+        <div class="s-item"><div class="s-lbl">Berat Badan</div><div class="s-val">${g('beratBadan')} kg</div></div>
+        <div class="s-item"><div class="s-lbl">Tinggi Badan</div><div class="s-val">${g('tinggiBadan')} cm</div></div>
+        <div class="s-item"><div class="s-lbl">Hipertensi</div><div class="s-val">${g('hipertensi')}</div></div>
+        <div class="s-item"><div class="s-lbl">Diabetes</div><div class="s-val">${g('diabetes')}</div></div>
+      </div>
     </div>`;
 }
 
@@ -1005,6 +1286,23 @@ async function submitData() {
     statusNikahDemo: g('statusNikahDemo'),
     disabilitas: g('disabilitas'),
     batukTB: g('batukTB'),
+    hepB_positif: g('hepB_positif'),
+    hepB_keluarga: g('hepB_keluarga'),
+    seksualBerisiko: g('seksualBerisiko'),
+    transfusiDarah: g('transfusiDarah'),
+    hemodialisa: g('hemodialisa'),
+    narkoba: g('narkoba'),
+    odhiv: g('odhiv'),
+    hepC_gagal: g('hepC_gagal'),
+    kolesterol: g('kolesterol'),
+    jiwa_semangat: g('jiwa_semangat'),
+    jiwa_murung: g('jiwa_murung'),
+    merokok_aktif: g('merokok_aktif'),
+    merokok_riwayat: g('merokok_riwayat'),
+    beratBadan: g('beratBadan'),
+    tinggiBadan: g('tinggiBadan'),
+    hipertensi: g('hipertensi'),
+    diabetes: g('diabetes'),
     jumlahFoto: 1,
     namaFoto: fotoData.name,
     fotoBase64: fotoData.dataUrl,
