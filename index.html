@@ -334,6 +334,7 @@
       <span class="meta-pill">📍 Biddokkes Polda NTB</span>
       <span class="meta-pill">📅 Tahun 2026</span>
       <span class="meta-pill">🔒 Data Terlindungi</span>
+      <button class="meta-pill admin-btn" onclick="showAdminLogin()" style="cursor:pointer;background:rgba(245,158,11,0.2);border-color:rgba(245,158,11,0.5);color:#fcd34d;font-weight:700;">📊 DATA</button>
     </div>
   </div>
 
@@ -649,6 +650,87 @@
     </div>
   </div>
 
+  <!-- ═══ ADMIN LOGIN MODAL ═══ -->
+  <div id="adminModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1000;display:none;align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:20px;padding:36px 32px;max-width:360px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.4);text-align:center;">
+      <div style="font-size:40px;margin-bottom:12px;">🔐</div>
+      <h2 style="font-size:18px;font-weight:800;color:#0f2340;margin-bottom:6px;">Akses Admin</h2>
+      <p style="font-size:13px;color:#64748b;margin-bottom:20px;">Masukkan password untuk melihat data</p>
+      <input type="password" id="adminPassInput" placeholder="Masukkan password..." 
+        style="width:100%;padding:11px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:14px;font-family:inherit;outline:none;margin-bottom:10px;text-align:center;"
+        onkeydown="if(event.key==='Enter')checkAdminPass()">
+      <span id="adminPassErr" style="display:none;font-size:12px;color:#ef4444;font-weight:600;margin-bottom:8px;display:none;">Password salah, coba lagi</span>
+      <div style="display:flex;gap:10px;margin-top:14px;">
+        <button onclick="closeAdminModal()" style="flex:1;padding:11px;border-radius:10px;border:1.5px solid #e2e8f0;background:#f8fafc;font-family:inherit;font-weight:600;cursor:pointer;font-size:14px;">Batal</button>
+        <button onclick="checkAdminPass()" style="flex:1;padding:11px;border-radius:10px;border:none;background:#0d9488;color:#fff;font-family:inherit;font-weight:700;cursor:pointer;font-size:14px;">Masuk →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ ADMIN PANEL ═══ -->
+  <div id="adminPanel" style="display:none;">
+    <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:20px;margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+        <div>
+          <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#5eead4;margin-bottom:4px;">Admin Panel</div>
+          <h2 style="font-size:18px;font-weight:800;color:#fff;">📊 Data Masuk CKG 2026</h2>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+          <span id="adminCount" style="background:rgba(13,148,136,0.3);color:#5eead4;font-size:12px;font-weight:700;padding:5px 14px;border-radius:100px;border:1px solid rgba(13,148,136,0.4);">0 data</span>
+          <button onclick="refreshAdminData()" style="padding:9px 16px;border-radius:10px;border:none;background:#0d9488;color:#fff;font-family:inherit;font-weight:700;cursor:pointer;font-size:12px;">🔄 Refresh</button>
+          <button onclick="exportAdminExcel()" style="padding:9px 16px;border-radius:10px;border:none;background:#f59e0b;color:#fff;font-family:inherit;font-weight:700;cursor:pointer;font-size:12px;">📥 Export Excel</button>
+          <button onclick="closeAdminPanel()" style="padding:9px 16px;border-radius:10px;border:1.5px solid rgba(255,255,255,0.2);background:transparent;color:rgba(255,255,255,0.7);font-family:inherit;font-weight:600;cursor:pointer;font-size:12px;">✕ Keluar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div id="adminStats" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:16px;"></div>
+
+    <!-- Search & Filter -->
+    <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:14px;margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap;">
+      <input type="text" id="adminSearch" placeholder="🔍 Cari nama, NIK, satker..." 
+        oninput="filterAdminTable()"
+        style="flex:1;min-width:200px;padding:9px 13px;border:1.5px solid rgba(255,255,255,0.15);border-radius:8px;background:rgba(255,255,255,0.08);color:#fff;font-family:inherit;font-size:13px;outline:none;">
+      <select id="adminFilterSatker" onchange="filterAdminTable()" style="padding:9px 13px;border:1.5px solid rgba(255,255,255,0.15);border-radius:8px;background:rgba(15,35,64,0.8);color:#fff;font-family:inherit;font-size:13px;outline:none;">
+        <option value="">Semua Satker</option>
+      </select>
+    </div>
+
+    <!-- Table -->
+    <div style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.2);">
+      <div style="overflow-x:auto;">
+        <table id="adminTable" style="width:100%;border-collapse:collapse;font-size:12px;">
+          <thead>
+            <tr style="background:#0f2340;">
+              <th style="padding:11px 12px;text-align:left;color:#5eead4;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">#</th>
+              <th style="padding:11px 12px;text-align:left;color:#5eead4;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">Timestamp</th>
+              <th style="padding:11px 12px;text-align:left;color:#5eead4;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">Nama Lengkap</th>
+              <th style="padding:11px 12px;text-align:left;color:#5eead4;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">NIK</th>
+              <th style="padding:11px 12px;text-align:left;color:#5eead4;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">Satker</th>
+              <th style="padding:11px 12px;text-align:left;color:#5eead4;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">NIP/NRP</th>
+              <th style="padding:11px 12px;text-align:left;color:#5eead4;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">Tgl Lahir</th>
+              <th style="padding:11px 12px;text-align:left;color:#5eead4;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">Kelamin</th>
+              <th style="padding:11px 12px;text-align:left;color:#5eead4;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">No. WA</th>
+              <th style="padding:11px 12px;text-align:left;color:#5eead4;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">Status Nikah</th>
+              <th style="padding:11px 12px;text-align:left;color:#5eead4;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">Pekerjaan</th>
+              <th style="padding:11px 12px;text-align:left;color:#5eead4;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">Alamat</th>
+              <th style="padding:11px 12px;text-align:left;color:#5eead4;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">Disabilitas</th>
+              <th style="padding:11px 12px;text-align:left;color:#5eead4;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">Riwayat Batuk</th>
+              <th style="padding:11px 12px;text-align:left;color:#5eead4;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">Foto</th>
+            </tr>
+          </thead>
+          <tbody id="adminTbody">
+            <tr><td colspan="15" style="text-align:center;padding:40px;color:#64748b;">⏳ Memuat data...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div style="margin-top:10px;text-align:right;">
+      <span id="adminFilterInfo" style="font-size:12px;color:rgba(255,255,255,0.4);"></span>
+    </div>
+  </div>
+
 </div><!-- /page-wrapper -->
 
 <script>
@@ -849,7 +931,9 @@ async function submitData() {
     statusNikahDemo: g('statusNikahDemo'),
     disabilitas: g('disabilitas'),
     batukTB: g('batukTB'),
+    jumlahFoto: 1,
     namaFoto: fotoData.name,
+    fotoBase64: fotoData.dataUrl,
   };
 
   // Loading
@@ -858,15 +942,18 @@ async function submitData() {
   saveBtn.disabled = true;
 
   // Kirim ke Google Spreadsheet
+  let kirimBerhasil = false;
   try {
-    await fetch(APPS_SCRIPT_URL, {
+    const res = await fetch(APPS_SCRIPT_URL, {
       method: 'POST',
       mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(rec),
     });
+    kirimBerhasil = true; // no-cors selalu resolve jika tidak ada network error
   } catch(err) {
-    console.warn('Fetch error (no-cors normal):', err);
+    console.warn('Gagal kirim ke Google Sheets:', err);
+    showToast('⚠️ Koneksi bermasalah, data disimpan lokal', 'error');
   }
 
   // Simpan lokal
@@ -883,7 +970,7 @@ async function submitData() {
   document.getElementById('successScreen').style.display = 'block';
   document.getElementById('rekapSection').style.display = 'none';
 
-  showToast('Data berhasil dikirim ke Google Spreadsheet!', 'success');
+  showToast(kirimBerhasil ? 'Data berhasil dikirim ke Google Spreadsheet!' : 'Data tersimpan lokal, coba kirim ulang nanti', kirimBerhasil ? 'success' : 'info');
 }
 
 function addNew() {
@@ -958,6 +1045,203 @@ function showToast(msg, type='info') {
   t.innerHTML = `<span>${icons[type]}</span><span>${msg}</span>`;
   document.getElementById('toastContainer').appendChild(t);
   setTimeout(() => t.remove(), 3500);
+}
+
+// ══════════════════════════════════════════
+// ── ADMIN PANEL ──
+// ══════════════════════════════════════════
+const ADMIN_PASSWORD = 'Biddokkes2026';
+const SHEET_ID = '10fqle3iU4BtnKiUROOCkx5HJ3poGE2D52veumkknrqA';
+const SHEET_NAME = 'Sheet1';
+let adminRawData = [];
+let adminFilteredData = [];
+
+function showAdminLogin() {
+  const modal = document.getElementById('adminModal');
+  modal.style.display = 'flex';
+  document.getElementById('adminPassInput').value = '';
+  document.getElementById('adminPassErr').style.display = 'none';
+  setTimeout(() => document.getElementById('adminPassInput').focus(), 100);
+}
+
+function closeAdminModal() {
+  document.getElementById('adminModal').style.display = 'none';
+}
+
+function checkAdminPass() {
+  const val = document.getElementById('adminPassInput').value;
+  if (val === ADMIN_PASSWORD) {
+    closeAdminModal();
+    openAdminPanel();
+  } else {
+    document.getElementById('adminPassErr').style.display = 'block';
+    document.getElementById('adminPassInput').value = '';
+    document.getElementById('adminPassInput').focus();
+  }
+}
+
+function openAdminPanel() {
+  // Sembunyikan form utama
+  document.querySelector('.progress-wrap').style.display = 'none';
+  document.querySelector('.step-nav').style.display = 'none';
+  document.querySelectorAll('.step-content').forEach(el => el.style.display = 'none');
+  document.getElementById('successScreen').style.display = 'none';
+  document.getElementById('rekapSection').style.display = 'none';
+  // Tampilkan admin panel
+  document.getElementById('adminPanel').style.display = 'block';
+  refreshAdminData();
+}
+
+function closeAdminPanel() {
+  document.getElementById('adminPanel').style.display = 'none';
+  document.querySelector('.progress-wrap').style.display = 'block';
+  document.querySelector('.step-nav').style.display = 'flex';
+  showStep(currentStep);
+}
+
+async function refreshAdminData() {
+  const tbody = document.getElementById('adminTbody');
+  tbody.innerHTML = '<tr><td colspan="15" style="text-align:center;padding:40px;color:#64748b;">⏳ Memuat data dari Google Sheets...</td></tr>';
+
+  try {
+    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
+    const res = await fetch(url);
+    const text = await res.text();
+    // Google mengembalikan format: /*O_o*/\ngoogle.visualization.Query.setResponse({...});
+    const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/)[1]);
+    const cols = json.table.cols;
+    const rows = json.table.rows || [];
+
+    adminRawData = rows.map((row, idx) => {
+      const cells = row.c || [];
+      const get = i => (cells[i] && cells[i].v !== null && cells[i].v !== undefined) ? String(cells[i].v) : '-';
+      return {
+        no: get(0),
+        timestamp: get(1),
+        nama: get(2),
+        nik: get(3),
+        satker: get(4),
+        nipNrp: get(5),
+        tglLahir: get(6),
+        kelamin: get(7),
+        noWa: get(8),
+        statusNikah: get(9),
+        pekerjaan: get(10),
+        alamat: get(11),
+        disabilitas: get(13),
+        batukTB: get(14),
+        linkFoto: get(16) !== '-' ? get(16) : null,
+      };
+    }).filter(d => d.nama !== '-' && d.nama !== 'Nama Lengkap'); // skip header row if any
+
+    renderAdminStats();
+    populateSatkerFilter();
+    adminFilteredData = [...adminRawData];
+    renderAdminTable();
+    document.getElementById('adminCount').textContent = adminRawData.length + ' data';
+    showToast('Data berhasil dimuat: ' + adminRawData.length + ' responden', 'success');
+  } catch(err) {
+    tbody.innerHTML = `<tr><td colspan="15" style="text-align:center;padding:40px;color:#ef4444;">❌ Gagal memuat data. Pastikan spreadsheet sudah dibagikan publik (Anyone with link).<br><small style="color:#94a3b8;">${err.message}</small></td></tr>`;
+    showToast('Gagal memuat data dari Sheets', 'error');
+  }
+}
+
+function renderAdminStats() {
+  const total = adminRawData.length;
+  const laki = adminRawData.filter(d => d.kelamin && d.kelamin.toLowerCase().includes('laki')).length;
+  const perempuan = total - laki;
+  const satkerSet = new Set(adminRawData.map(d => d.satker).filter(s => s && s !== '-'));
+
+  const statsEl = document.getElementById('adminStats');
+  const card = (icon, label, value, color) => `
+    <div style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:14px 16px;">
+      <div style="font-size:22px;margin-bottom:4px;">${icon}</div>
+      <div style="font-size:22px;font-weight:800;color:${color};">${value}</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.5);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">${label}</div>
+    </div>`;
+  statsEl.innerHTML =
+    card('👥','Total Responden', total, '#5eead4') +
+    card('♂️','Laki-laki', laki, '#60a5fa') +
+    card('♀️','Perempuan', perempuan, '#f472b6') +
+    card('🏢','Jumlah Satker', satkerSet.size, '#fbbf24');
+}
+
+function populateSatkerFilter() {
+  const sel = document.getElementById('adminFilterSatker');
+  const satkers = [...new Set(adminRawData.map(d => d.satker).filter(s => s && s !== '-'))].sort();
+  sel.innerHTML = '<option value="">Semua Satker</option>' + satkers.map(s => `<option value="${s}">${s}</option>`).join('');
+}
+
+function filterAdminTable() {
+  const q = document.getElementById('adminSearch').value.toLowerCase();
+  const satker = document.getElementById('adminFilterSatker').value;
+  adminFilteredData = adminRawData.filter(d => {
+    const matchQ = !q || [d.nama, d.nik, d.satker, d.nipNrp, d.noWa].some(v => v && v.toLowerCase().includes(q));
+    const matchSatker = !satker || d.satker === satker;
+    return matchQ && matchSatker;
+  });
+  renderAdminTable();
+}
+
+function renderAdminTable() {
+  const tbody = document.getElementById('adminTbody');
+  document.getElementById('adminFilterInfo').textContent =
+    adminFilteredData.length < adminRawData.length
+      ? `Menampilkan ${adminFilteredData.length} dari ${adminRawData.length} data`
+      : '';
+
+  if (!adminFilteredData.length) {
+    tbody.innerHTML = '<tr><td colspan="15" style="text-align:center;padding:40px;color:#64748b;">Tidak ada data ditemukan</td></tr>';
+    return;
+  }
+
+  const fmtDate = s => {
+    if (!s || s === '-') return '-';
+    // Google Sheets date format: Date(year,month,day)
+    const m = s.match(/Date\((\d+),(\d+),(\d+)\)/);
+    if (m) return `${String(m[3]).padStart(2,'0')}/${String(Number(m[2])+1).padStart(2,'0')}/${m[1]}`;
+    return s;
+  };
+
+  tbody.innerHTML = adminFilteredData.map((d, i) => `
+    <tr style="border-bottom:1px solid #f1f5f9;${i%2===0?'background:#fff':'background:#f8fafc'}">
+      <td style="padding:9px 12px;font-weight:700;color:#64748b;font-size:11px;">${i+1}</td>
+      <td style="padding:9px 12px;font-size:11px;color:#64748b;white-space:nowrap;">${d.timestamp}</td>
+      <td style="padding:9px 12px;font-weight:700;color:#0f2340;white-space:nowrap;">${d.nama}</td>
+      <td style="padding:9px 12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#475569;">${d.nik}</td>
+      <td style="padding:9px 12px;font-size:12px;"><span style="background:#e0f2fe;color:#0369a1;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">${d.satker}</span></td>
+      <td style="padding:9px 12px;font-size:12px;">${d.nipNrp}</td>
+      <td style="padding:9px 12px;font-size:12px;white-space:nowrap;">${fmtDate(d.tglLahir)}</td>
+      <td style="padding:9px 12px;font-size:12px;">${d.kelamin}</td>
+      <td style="padding:9px 12px;font-size:12px;white-space:nowrap;">${d.noWa}</td>
+      <td style="padding:9px 12px;font-size:12px;">${d.statusNikah}</td>
+      <td style="padding:9px 12px;font-size:12px;">${d.pekerjaan}</td>
+      <td style="padding:9px 12px;font-size:11px;max-width:160px;word-wrap:break-word;">${d.alamat}</td>
+      <td style="padding:9px 12px;font-size:12px;">${d.disabilitas}</td>
+      <td style="padding:9px 12px;font-size:12px;">${d.batukTB}</td>
+      <td style="padding:9px 12px;text-align:center;">
+        ${d.linkFoto ? `<a href="${d.linkFoto}" target="_blank" style="background:#0d9488;color:#fff;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;text-decoration:none;">📷 Lihat</a>` : '<span style="color:#cbd5e1;font-size:11px;">-</span>'}
+      </td>
+    </tr>`).join('');
+}
+
+function exportAdminExcel() {
+  if (!adminRawData.length) { showToast('Tidak ada data untuk diexport', 'error'); return; }
+  const fmtDate = s => {
+    if (!s || s === '-') return '-';
+    const m = s.match(/Date\((\d+),(\d+),(\d+)\)/);
+    if (m) return `${String(m[3]).padStart(2,'0')}/${String(Number(m[2])+1).padStart(2,'0')}/${m[1]}`;
+    return s;
+  };
+  const headers = ['No','Timestamp','Nama Lengkap','NIK','Satker','NIP/NRP','Tgl Lahir','Jenis Kelamin','No. WhatsApp','Status Nikah','Pekerjaan','Alamat','Disabilitas','Riwayat Batuk','Link Foto'];
+  const rows = adminRawData.map((d,i) => [i+1, d.timestamp, d.nama, d.nik, d.satker, d.nipNrp, fmtDate(d.tglLahir), d.kelamin, d.noWa, d.statusNikah, d.pekerjaan, d.alamat, d.disabilitas, d.batukTB, d.linkFoto||'-']);
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+  ws['!cols'] = [{wch:4},{wch:20},{wch:25},{wch:18},{wch:22},{wch:14},{wch:12},{wch:12},{wch:16},{wch:16},{wch:14},{wch:35},{wch:16},{wch:16},{wch:30}];
+  XLSX.utils.book_append_sheet(wb, ws, 'Data CKG 2026');
+  const now = new Date();
+  XLSX.writeFile(wb, `Admin_CKG2026_${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}.xlsx`);
+  showToast('Export Excel berhasil!', 'success');
 }
 </script>
 </body>
