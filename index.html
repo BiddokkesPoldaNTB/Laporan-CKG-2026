@@ -952,11 +952,14 @@
               <th style="padding:11px 12px;text-align:left;color:#5eead4;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">Alamat</th>
               <th style="padding:11px 12px;text-align:left;color:#5eead4;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">Disabilitas</th>
               <th style="padding:11px 12px;text-align:left;color:#5eead4;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">Riwayat Batuk</th>
-              <th style="padding:11px 12px;text-align:left;color:#5eead4;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">Foto</th>
+              <th style="padding:11px 12px;text-align:center;color:#4ade80;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">🩺 Tensi</th>
+              <th style="padding:11px 12px;text-align:center;color:#4ade80;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">🩸 Gula</th>
+              <th style="padding:11px 12px;text-align:center;color:#4ade80;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">💊 Kolesterol</th>
+              <th style="padding:11px 12px;text-align:center;color:#f87171;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">Hapus</th>
             </tr>
           </thead>
           <tbody id="adminTbody">
-            <tr><td colspan="15" style="text-align:center;padding:40px;color:#64748b;">⏳ Memuat data...</td></tr>
+            <tr><td colspan="18" style="text-align:center;padding:40px;color:#64748b;">⏳ Memuat data...</td></tr>
           </tbody>
         </table>
       </div>
@@ -1533,7 +1536,7 @@ function closeAdminPanel() {
 
 async function refreshAdminData() {
   const tbody = document.getElementById('adminTbody');
-  tbody.innerHTML = '<tr><td colspan="15" style="text-align:center;padding:40px;color:#64748b;">⏳ Memuat data dari Google Sheets...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="18" style="text-align:center;padding:40px;color:#64748b;">⏳ Memuat data dari Google Sheets...</td></tr>';
 
   try {
     const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
@@ -1599,7 +1602,7 @@ async function refreshAdminData() {
     document.getElementById('adminCount').textContent = adminRawData.length + ' data';
     showToast('Data berhasil dimuat: ' + adminRawData.length + ' responden', 'success');
   } catch(err) {
-    tbody.innerHTML = `<tr><td colspan="15" style="text-align:center;padding:40px;color:#ef4444;">❌ Gagal memuat data. Pastikan spreadsheet sudah dibagikan publik (Anyone with link).<br><small style="color:#94a3b8;">${err.message}</small></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="18" style="text-align:center;padding:40px;color:#ef4444;">❌ Gagal memuat data. Pastikan spreadsheet sudah dibagikan publik (Anyone with link).<br><small style="color:#94a3b8;">${err.message}</small></td></tr>`;
     showToast('Gagal memuat data dari Sheets', 'error');
   }
 }
@@ -1609,6 +1612,7 @@ function renderAdminStats() {
   const laki = adminRawData.filter(d => d.kelamin && d.kelamin.toLowerCase().includes('laki')).length;
   const perempuan = total - laki;
   const satkerSet = new Set(adminRawData.map(d => d.satker).filter(s => s && s !== '-'));
+  const sudahTensi = adminRawData.filter(d => d.tensi && d.tensi !== '-').length;
 
   const statsEl = document.getElementById('adminStats');
   const card = (icon, label, value, color) => `
@@ -1621,7 +1625,8 @@ function renderAdminStats() {
     card('👥','Total Responden', total, '#5eead4') +
     card('♂️','Laki-laki', laki, '#60a5fa') +
     card('♀️','Perempuan', perempuan, '#f472b6') +
-    card('🏢','Jumlah Satker', satkerSet.size, '#fbbf24');
+    card('🏢','Jumlah Satker', satkerSet.size, '#fbbf24') +
+    card('🩺','Sudah Input Tensi', `${sudahTensi}/${total}`, '#4ade80');
 }
 
 function populateSatkerFilter() {
@@ -1649,7 +1654,7 @@ function renderAdminTable() {
       : '';
 
   if (!adminFilteredData.length) {
-    tbody.innerHTML = '<tr><td colspan="15" style="text-align:center;padding:40px;color:#64748b;">Tidak ada data ditemukan</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="18" style="text-align:center;padding:40px;color:#64748b;">Tidak ada data ditemukan</td></tr>';
     return;
   }
 
@@ -1661,8 +1666,21 @@ function renderAdminTable() {
     return s;
   };
 
-  tbody.innerHTML = adminFilteredData.map((d, i) => `
-    <tr onclick="showDetailModal(${i})" style="border-bottom:1px solid #f1f5f9;cursor:pointer;transition:background 0.15s;${i%2===0?'background:#fff':'background:#f8fafc'}" onmouseover="this.style.background='#e0f7f5'" onmouseout="this.style.background='${i%2===0?'#fff':'#f8fafc'}'">
+  tbody.innerHTML = adminFilteredData.map((d, i) => {
+    const sudahInput = d.tensi && d.tensi !== '-';
+    const bg = i%2===0 ? '#fff' : '#f8fafc';
+    const hoverBg = '#e0f7f5';
+
+    const statusBadge = sudahInput
+      ? `<span style="display:inline-block;background:#dcfce7;color:#16a34a;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;border:1px solid #86efac;">✅ Sudah</span>`
+      : `<span style="display:inline-block;background:#f1f5f9;color:#94a3b8;font-size:10px;font-weight:600;padding:3px 8px;border-radius:20px;border:1px solid #e2e8f0;">— Belum</span>`;
+
+    const tensiVal = sudahInput ? `<div style="font-size:11px;font-weight:700;color:#16a34a;">${d.tensi}</div>` : '<span style="color:#cbd5e1;font-size:11px;">-</span>';
+    const gulaVal = d.gulaDarah && d.gulaDarah !== '-' ? `<div style="font-size:11px;font-weight:700;color:#16a34a;">${d.gulaDarah}</div>` : '<span style="color:#cbd5e1;font-size:11px;">-</span>';
+    const kolVal = d.kolesteralHasil && d.kolesteralHasil !== '-' ? `<div style="font-size:11px;font-weight:700;color:#16a34a;">${d.kolesteralHasil}</div>` : '<span style="color:#cbd5e1;font-size:11px;">-</span>';
+
+    return `
+    <tr id="row-${i}" onclick="showDetailModal(${i})" style="border-bottom:1px solid #f1f5f9;cursor:pointer;transition:background 0.15s;background:${bg};" onmouseover="this.style.background='${hoverBg}'" onmouseout="this.style.background='${bg}'">
       <td style="padding:9px 12px;font-weight:700;color:#64748b;font-size:11px;">${i+1}</td>
       <td style="padding:9px 12px;font-size:11px;color:#64748b;white-space:nowrap;">${d.timestamp}</td>
       <td style="padding:9px 12px;font-weight:700;color:#0f2340;white-space:nowrap;">${d.nama}</td>
@@ -1674,13 +1692,17 @@ function renderAdminTable() {
       <td style="padding:9px 12px;font-size:12px;white-space:nowrap;">${d.noWa}</td>
       <td style="padding:9px 12px;font-size:12px;">${d.statusNikah}</td>
       <td style="padding:9px 12px;font-size:12px;">${d.pekerjaan}</td>
-      <td style="padding:9px 12px;font-size:11px;max-width:160px;word-wrap:break-word;">${d.alamat}</td>
+      <td style="padding:9px 12px;font-size:11px;max-width:140px;word-wrap:break-word;">${d.alamat}</td>
       <td style="padding:9px 12px;font-size:12px;">${d.disabilitas}</td>
       <td style="padding:9px 12px;font-size:12px;">${d.batukTB}</td>
-      <td style="padding:9px 12px;text-align:center;">
-        ${d.linkFoto ? `<a href="${d.linkFoto}" target="_blank" style="background:#0d9488;color:#fff;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;text-decoration:none;">📷 Lihat</a>` : '<span style="color:#cbd5e1;font-size:11px;">-</span>'}
+      <td style="padding:9px 12px;text-align:center;">${tensiVal}</td>
+      <td style="padding:9px 12px;text-align:center;">${gulaVal}</td>
+      <td style="padding:9px 12px;text-align:center;">${kolVal}</td>
+      <td style="padding:9px 12px;text-align:center;" onclick="event.stopPropagation()">
+        <button onclick="confirmDelete(${i})" style="background:#fee2e2;border:1px solid #fca5a5;color:#dc2626;padding:5px 10px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">🗑️ Hapus</button>
       </td>
-    </tr>`).join('');
+    </tr>`;
+  }).join('');
 }
 
 function field(label, value) {
@@ -1756,6 +1778,7 @@ function showDetailModal(idx) {
   document.getElementById('tensiSaveStatus').textContent = '';
   // Simpan nik aktif untuk digunakan saat save
   document.getElementById('detailModal').dataset.activeNik = d.nik;
+  document.getElementById('detailModal').dataset.activeTs = d.timestamp;
 
   const modal = document.getElementById('detailModal');
   modal.style.display = 'flex';
@@ -1773,8 +1796,36 @@ document.addEventListener('click', function(e) {
   if (e.target === adminModal) closeAdminModal();
 });
 
+async function confirmDelete(idx) {
+  const d = adminFilteredData[idx];
+  if (!d) return;
+  const ok = confirm(`Hapus data:\n"${d.nama}" (${d.nik})?\n\nData akan dihapus permanen dari Google Sheets.`);
+  if (!ok) return;
+
+  showToast('⏳ Menghapus data...', 'info');
+  try {
+    await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ _action: 'deleteRow', nik: d.nik, timestamp: d.timestamp }),
+    });
+    // Hapus dari data lokal
+    const rawIdx = adminRawData.findIndex(r => r.nik === d.nik && r.timestamp === d.timestamp);
+    if (rawIdx !== -1) adminRawData.splice(rawIdx, 1);
+    adminFilteredData.splice(idx, 1);
+    renderAdminStats();
+    renderAdminTable();
+    document.getElementById('adminCount').textContent = adminRawData.length + ' data';
+    showToast('Data berhasil dihapus', 'success');
+  } catch(err) {
+    showToast('Gagal menghapus data', 'error');
+  }
+}
+
 async function saveTensiData() {
   const nik = document.getElementById('detailModal').dataset.activeNik;
+  const timestamp = document.getElementById('detailModal').dataset.activeTs;
   const tensi = document.getElementById('input_tensi').value.trim();
   const gulaDarah = document.getElementById('input_gulaDarah').value.trim();
   const kolesteralHasil = document.getElementById('input_kolesterol').value.trim();
@@ -1789,7 +1840,6 @@ async function saveTensiData() {
   statusEl.style.color = '#64748b';
   statusEl.textContent = '⏳ Menyimpan...';
 
-  // Kirim ke Apps Script
   try {
     await fetch(APPS_SCRIPT_URL, {
       method: 'POST',
@@ -1797,13 +1847,15 @@ async function saveTensiData() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ _action: 'updateTensi', nik, tensi, gulaDarah, kolesteralHasil }),
     });
-    // Update data lokal di adminRawData
-    const idx = adminRawData.findIndex(d => d.nik === nik);
+    // Update data lokal
+    const idx = adminRawData.findIndex(d => d.nik === nik && d.timestamp === timestamp);
     if (idx !== -1) {
       adminRawData[idx].tensi = tensi;
       adminRawData[idx].gulaDarah = gulaDarah;
       adminRawData[idx].kolesteralHasil = kolesteralHasil;
     }
+    // Re-render tabel agar badge langsung berubah
+    filterAdminTable();
     statusEl.style.color = '#16a34a';
     statusEl.textContent = '✅ Data berhasil disimpan!';
     showToast('Data tensi berhasil disimpan', 'success');
