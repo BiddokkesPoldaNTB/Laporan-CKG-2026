@@ -1714,8 +1714,9 @@ function renderAdminTable() {
 
   tbody.innerHTML = adminFilteredData.map((d, i) => {
     const sudahInput = d.tensi && d.tensi !== '-';
-    const bg = i%2===0 ? '#fff' : '#f8fafc';
-    const hoverBg = '#e0f7f5';
+    const bg = sudahInput ? '#f0fdf4' : (i%2===0 ? '#fff' : '#f8fafc');
+    const hoverBg = sudahInput ? '#dcfce7' : '#e0f7f5';
+    const namaCss = sudahInput ? 'color:#15803d;font-weight:800;' : 'color:#0f2340;font-weight:700;';
 
     const statusBadge = sudahInput
       ? `<span style="display:inline-block;background:#dcfce7;color:#16a34a;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;border:1px solid #86efac;">✅ Sudah</span>`
@@ -1726,10 +1727,10 @@ function renderAdminTable() {
     const kolVal = d.kolesteralHasil && d.kolesteralHasil !== '-' ? `<div style="font-size:11px;font-weight:700;color:#16a34a;">${d.kolesteralHasil}</div>` : '<span style="color:#cbd5e1;font-size:11px;">-</span>';
 
     return `
-    <tr id="row-${i}" onclick="showDetailModal(${i})" style="border-bottom:1px solid #f1f5f9;cursor:pointer;transition:background 0.15s;background:${bg};" onmouseover="this.style.background='${hoverBg}'" onmouseout="this.style.background='${bg}'">
+    <tr id="row-${i}" onclick="showDetailModal(${i})" style="border-bottom:1px solid ${sudahInput?'#bbf7d0':'#f1f5f9'};cursor:pointer;transition:background 0.15s;background:${bg};" onmouseover="this.style.background='${hoverBg}'" onmouseout="this.style.background='${bg}'">
       <td style="padding:9px 12px;font-weight:700;color:#64748b;font-size:11px;">${i+1}</td>
       <td style="padding:9px 12px;font-size:11px;color:#64748b;white-space:nowrap;">${d.timestamp}</td>
-      <td style="padding:9px 12px;font-weight:700;color:#0f2340;white-space:nowrap;">${d.nama}</td>
+      <td style="padding:9px 12px;white-space:nowrap;${namaCss}">${sudahInput ? '🟢 ' : ''}${d.nama}</td>
       <td style="padding:9px 12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#475569;">${d.nik}</td>
       <td style="padding:9px 12px;font-size:12px;"><span style="background:#e0f2fe;color:#0369a1;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">${d.satker}</span></td>
       <td style="padding:9px 12px;font-size:12px;">${d.nipNrp}</td>
