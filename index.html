@@ -750,13 +750,42 @@
       </div>
     </div>
 
+    <!-- Skrining Gigi -->
+    <div class="card" style="margin-top:16px">
+      <div class="card-header" style="background:linear-gradient(135deg,#0369a1,#0ea5e9);">
+        <div class="card-icon" style="background:rgba(255,255,255,0.15);border-radius:12px;padding:10px;font-size:22px;">🦷</div>
+        <div><h2 style="color:#fff">Skrining Gigi</h2><p style="color:rgba(255,255,255,0.75)">Kondisi kesehatan gigi dan mulut</p></div>
+      </div>
+      <div class="card-body">
+        <div class="form-grid">
+
+          <div class="form-group full">
+            <label class="form-label">1. Apakah ada gigi Anda berlubang atau Karies? <span class="req">*</span></label>
+            <select class="form-select" id="gigi_karies">
+              <option value="">— Pilih Jawaban —</option>
+              <option>Ya</option><option>Tidak</option>
+            </select>
+            <span class="error-msg" id="err-gigi_karies">Pertanyaan ini wajib dijawab</span>
+          </div>
+
+          <div class="form-group full">
+            <label class="form-label">2. Apakah ada gigi Anda yang dicabut/hilang? <span class="req">*</span></label>
+            <select class="form-select" id="gigi_cabut">
+              <option value="">— Pilih Jawaban —</option>
+              <option>Ya</option><option>Tidak</option>
+            </select>
+            <span class="error-msg" id="err-gigi_cabut">Pertanyaan ini wajib dijawab</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
     <div class="nav-btns">
       <button class="btn btn-outline" onclick="prevStep(4)">← Kembali</button>
       <button class="btn btn-primary" onclick="nextStep(4)">Selanjutnya →</button>
     </div>
   </div>
-
-  <!-- ═══ STEP 5: PEMERIKSAAN KESEHATAN ═══ -->
   <div id="step5" class="step-content" style="display:none">
 
     <!-- Gizi -->
@@ -1043,6 +1072,13 @@
         <div id="d_merokok_riwayat" class="detail-field"></div>
       </div>
 
+      <!-- Gigi -->
+      <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#0369a1;margin-bottom:10px;display:flex;align-items:center;gap:6px;">🦷 SKRINING GIGI</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;">
+        <div id="d_gigi_karies" class="detail-field"></div>
+        <div id="d_gigi_cabut" class="detail-field"></div>
+      </div>
+
       <!-- Pemeriksaan Kesehatan -->
       <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#0d9488;margin-bottom:10px;display:flex;align-items:center;gap:6px;">🩺 PEMERIKSAAN KESEHATAN</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;">
@@ -1209,7 +1245,7 @@ function validateStep(step) {
   }
 
   if (step === 4) {
-    ['batukTB','hepB_positif','hepB_keluarga','seksualBerisiko','transfusiDarah','hemodialisa','narkoba','odhiv','hepC_gagal','kolesterol','jiwa_semangat','jiwa_murung','merokok_aktif','merokok_riwayat'].forEach(id => {
+    ['batukTB','hepB_positif','hepB_keluarga','seksualBerisiko','transfusiDarah','hemodialisa','narkoba','odhiv','hepC_gagal','kolesterol','jiwa_semangat','jiwa_murung','merokok_aktif','merokok_riwayat','gigi_karies','gigi_cabut'].forEach(id => {
       if (!document.getElementById(id).value) { markErr(id); ok = false; }
     });
   }
@@ -1318,6 +1354,13 @@ function buildSummary() {
       </div>
     </div>
     <div class="summary-block">
+      <div class="summary-block-title">Skrining Gigi</div>
+      <div class="summary-grid">
+        <div class="s-item"><div class="s-lbl">Gigi Berlubang/Karies</div><div class="s-val">${g('gigi_karies')}</div></div>
+        <div class="s-item"><div class="s-lbl">Gigi Dicabut/Hilang</div><div class="s-val">${g('gigi_cabut')}</div></div>
+      </div>
+    </div>
+    <div class="summary-block">
       <div class="summary-block-title">Pemeriksaan Kesehatan</div>
       <div class="summary-grid">
         <div class="s-item"><div class="s-lbl">Berat Badan</div><div class="s-val">${g('beratBadan')} kg</div></div>
@@ -1365,6 +1408,8 @@ async function submitData() {
     jiwa_murung: g('jiwa_murung'),
     merokok_aktif: g('merokok_aktif'),
     merokok_riwayat: g('merokok_riwayat'),
+    gigi_karies: g('gigi_karies'),
+    gigi_cabut: g('gigi_cabut'),
     beratBadan: g('beratBadan'),
     tinggiBadan: g('tinggiBadan'),
     hipertensi: g('hipertensi'),
@@ -1583,14 +1628,15 @@ async function refreshAdminData() {
         jiwa_murung:     get(29),
         merokok_aktif:   get(30),
         merokok_riwayat: get(31),
-        beratBadan:      get(32),
-        tinggiBadan:     get(33),
-        hipertensi:      get(34),
-        diabetes:        get(35),
-        // Hasil pemeriksaan petugas
-        tensi:           get(36),
-        gulaDarah:       get(37),
-        kolesteralHasil: get(38),
+        gigi_karies:     get(32),
+        gigi_cabut:      get(33),
+        beratBadan:      get(34),
+        tinggiBadan:     get(35),
+        hipertensi:      get(36),
+        diabetes:        get(37),
+        tensi:           get(38),
+        gulaDarah:       get(39),
+        kolesteralHasil: get(40),
         linkFoto:        null,
       };
     }).filter(d => d.nama !== '-' && d.nama !== 'Nama Lengkap');
@@ -1755,6 +1801,8 @@ function showDetailModal(idx) {
   // Merokok
   document.getElementById('d_merokok_aktif').innerHTML = field('Merokok Aktif', d.merokok_aktif);
   document.getElementById('d_merokok_riwayat').innerHTML = field('Riwayat Merokok', d.merokok_riwayat);
+  document.getElementById('d_gigi_karies').innerHTML = field('Gigi Berlubang/Karies', d.gigi_karies);
+  document.getElementById('d_gigi_cabut').innerHTML = field('Gigi Dicabut/Hilang', d.gigi_cabut);
 
   // Pemeriksaan Kesehatan
   document.getElementById('d_beratBadan').innerHTML = field('Berat Badan', d.beratBadan ? d.beratBadan + ' kg' : '-');
