@@ -421,8 +421,8 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">Tanggal Lahir <span class="req">*</span></label>
-            <input type="date" class="form-input" id="tanggalLahir">
+            <label class="form-label">Tanggal Lahir <span class="req">*</span><span class="hint">(contoh: 17 Januari 2009)</span></label>
+            <input type="text" class="form-input" id="tanggalLahir" placeholder="Tanggal Bulan Tahun, contoh: 17 Januari 2009">
             <span class="error-msg" id="err-tanggalLahir">Tanggal lahir wajib diisi</span>
           </div>
 
@@ -479,6 +479,13 @@
               <option value="">— Pilih Pekerjaan —</option>
               <option>Polri</option>
               <option>ASN Polri</option>
+              <option>Belum/Tidak Bekerja</option>
+              <option>Pelajar</option>
+              <option>Mahasiswa</option>
+              <option>Ibu Rumah Tangga</option>
+              <option>Pegawai Swasta</option>
+              <option>Wirausaha</option>
+              <option>Pengusaha</option>
             </select>
             <span class="error-msg" id="err-pekerjaan">Pekerjaan wajib dipilih</span>
           </div>
@@ -530,31 +537,7 @@
         <div><h2>Demografi</h2><p>Data demografi peserta CKG 2026</p></div>
       </div>
       <div class="card-body">
-        <div class="form-grid">
-
-          <div class="form-group">
-            <label class="form-label">Status Pernikahan <span class="req">*</span></label>
-            <select class="form-select" id="statusNikahDemo">
-              <option value="">— Pilih Status —</option>
-              <option>Belum Menikah</option>
-              <option>Menikah</option>
-              <option>Cerai Mati</option>
-              <option>Cerai Hidup</option>
-            </select>
-            <span class="error-msg" id="err-statusNikahDemo">Status pernikahan wajib dipilih</span>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Status Disabilitas <span class="req">*</span></label>
-            <select class="form-select" id="disabilitas">
-              <option value="">— Pilih Status —</option>
-              <option>Non Disabilitas</option>
-              <option>Penyandang Disabilitas</option>
-            </select>
-            <span class="error-msg" id="err-disabilitas">Status disabilitas wajib dipilih</span>
-          </div>
-
-        </div>
+        <p style="color:#64748b;font-size:14px;">Tidak ada pertanyaan tambahan pada tahap ini. Klik "Selanjutnya" untuk melanjutkan ke Faktor Risiko.</p>
       </div>
     </div>
     <div class="nav-btns">
@@ -588,99 +571,6 @@
       </div>
     </div>
 
-    <!-- Penyakit Hati -->
-    <div class="card" style="margin-top:16px">
-      <div class="card-header amber">
-        <div class="card-icon ci-amber">🫀</div>
-        <div><h2>Penyakit Hati</h2><p>Skrining risiko Hepatitis dan penyakit hati</p></div>
-      </div>
-      <div class="card-body">
-        <div class="form-grid">
-
-          <div class="form-group full">
-            <label class="form-label">1. Apakah Anda pernah menjalani tes untuk Hepatitis B dan mendapatkan hasil Positif? <span class="req">*</span></label>
-            <select class="form-select" id="hepB_positif">
-              <option value="">— Pilih Jawaban —</option>
-              <option>Ya</option><option>Tidak</option>
-            </select>
-            <span class="error-msg" id="err-hepB_positif">Pertanyaan ini wajib dijawab</span>
-          </div>
-
-          <div class="form-group full">
-            <label class="form-label">2. Apakah Anda memiliki ibu kandung/saudara sekandung yang menderita Hepatitis B? <span class="req">*</span></label>
-            <select class="form-select" id="hepB_keluarga">
-              <option value="">— Pilih Jawaban —</option>
-              <option>Ya</option><option>Tidak</option>
-            </select>
-            <span class="error-msg" id="err-hepB_keluarga">Pertanyaan ini wajib dijawab</span>
-          </div>
-
-          <div class="form-group full">
-            <label class="form-label">3. Apakah Anda pernah berhubungan seksual berisiko/tanpa pengaman dengan bukan pasangan suami/istri? <span class="req">*</span></label>
-            <select class="form-select" id="seksualBerisiko">
-              <option value="">— Pilih Jawaban —</option>
-              <option>Ya</option><option>Tidak</option>
-            </select>
-            <span class="error-msg" id="err-seksualBerisiko">Pertanyaan ini wajib dijawab</span>
-          </div>
-
-          <div class="form-group full">
-            <label class="form-label">4. Apakah Anda pernah menerima transfusi darah sebelumnya? <span class="req">*</span></label>
-            <select class="form-select" id="transfusiDarah">
-              <option value="">— Pilih Jawaban —</option>
-              <option>Ya</option><option>Tidak</option>
-            </select>
-            <span class="error-msg" id="err-transfusiDarah">Pertanyaan ini wajib dijawab</span>
-          </div>
-
-          <div class="form-group full">
-            <label class="form-label">5. Apakah Anda pernah menjalani cuci darah atau hemodialisa? <span class="req">*</span></label>
-            <select class="form-select" id="hemodialisa">
-              <option value="">— Pilih Jawaban —</option>
-              <option>Ya</option><option>Tidak</option>
-            </select>
-            <span class="error-msg" id="err-hemodialisa">Pertanyaan ini wajib dijawab</span>
-          </div>
-
-          <div class="form-group full">
-            <label class="form-label">6. Apakah Anda pernah menggunakan narkoba atau bahan adiktif lainnya? <span class="req">*</span></label>
-            <select class="form-select" id="narkoba">
-              <option value="">— Pilih Jawaban —</option>
-              <option>Ya</option><option>Tidak</option>
-            </select>
-            <span class="error-msg" id="err-narkoba">Pertanyaan ini wajib dijawab</span>
-          </div>
-
-          <div class="form-group full">
-            <label class="form-label">7. Apakah Anda adalah Orang dengan HIV (ODHIV)? <span class="req">*</span></label>
-            <select class="form-select" id="odhiv">
-              <option value="">— Pilih Jawaban —</option>
-              <option>Ya</option><option>Tidak</option>
-            </select>
-            <span class="error-msg" id="err-odhiv">Pertanyaan ini wajib dijawab</span>
-          </div>
-
-          <div class="form-group full">
-            <label class="form-label">8. Apakah Anda pernah mendapatkan pengobatan Hepatitis C dan tidak sembuh? <span class="req">*</span></label>
-            <select class="form-select" id="hepC_gagal">
-              <option value="">— Pilih Jawaban —</option>
-              <option>Ya</option><option>Tidak</option>
-            </select>
-            <span class="error-msg" id="err-hepC_gagal">Pertanyaan ini wajib dijawab</span>
-          </div>
-
-          <div class="form-group full">
-            <label class="form-label">9. Apakah Anda pernah didiagnosa atau mendapatkan hasil pemeriksaan kolesterol (lemak darah) tinggi? <span class="req">*</span></label>
-            <select class="form-select" id="kolesterol">
-              <option value="">— Pilih Jawaban —</option>
-              <option>Ya</option><option>Tidak</option>
-            </select>
-            <span class="error-msg" id="err-kolesterol">Pertanyaan ini wajib dijawab</span>
-          </div>
-
-        </div>
-      </div>
-    </div>
 
     <!-- Kesehatan Jiwa -->
     <div class="card" style="margin-top:16px">
@@ -859,13 +749,16 @@
   <!-- ═══ STEP 6: SIMPAN ═══ -->
   <div id="step6" class="step-content" style="display:none">
 
-    <!-- Ringkasan -->
     <div class="card">
       <div class="card-header teal">
-        <div class="card-icon ci-teal">📋</div>
-        <div><h2>Ringkasan Data</h2><p>Periksa kembali sebelum menyimpan</p></div>
+        <div class="card-icon ci-teal">✅</div>
+        <div><h2>Selesai!</h2><p>Semua data sudah lengkap, klik tombol di bawah untuk menyimpan</p></div>
       </div>
-      <div class="card-body" id="summaryContent"></div>
+      <div class="card-body" style="text-align:center;padding:48px 24px;">
+        <div style="font-size:56px;margin-bottom:16px;">🎉</div>
+        <h3 style="font-size:18px;font-weight:800;color:#0f2340;margin-bottom:8px;">Data Anda siap disimpan</h3>
+        <p style="color:#64748b;font-size:14px;max-width:420px;margin:0 auto;">Pastikan seluruh data yang Anda isi sudah benar. Jika ingin memeriksa kembali, klik "Edit Data" untuk kembali ke langkah sebelumnya.</p>
+      </div>
     </div>
 
     <div class="nav-btns">
@@ -979,7 +872,6 @@
               <th style="padding:11px 12px;text-align:left;color:#5eead4;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">Status Nikah</th>
               <th style="padding:11px 12px;text-align:left;color:#5eead4;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">Pekerjaan</th>
               <th style="padding:11px 12px;text-align:left;color:#5eead4;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">Alamat</th>
-              <th style="padding:11px 12px;text-align:left;color:#5eead4;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">Disabilitas</th>
               <th style="padding:11px 12px;text-align:left;color:#5eead4;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">Riwayat Batuk</th>
               <th style="padding:11px 12px;text-align:center;color:#4ade80;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">🩺 Tensi</th>
               <th style="padding:11px 12px;text-align:center;color:#4ade80;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">🩸 Gula</th>
@@ -1038,24 +930,9 @@
       </div>
 
       <!-- Demografi & Faktor Risiko -->
-      <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#0d9488;margin-bottom:10px;display:flex;align-items:center;gap:6px;">🏥 DEMOGRAFI</div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#0d9488;margin-bottom:10px;display:flex;align-items:center;gap:6px;">🏥 FAKTOR RISIKO TB</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;">
-        <div id="d_disabilitas" class="detail-field"></div>
-        <div id="d_batukTB" class="detail-field"></div>
-      </div>
-
-      <!-- Penyakit Hati -->
-      <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#f59e0b;margin-bottom:10px;display:flex;align-items:center;gap:6px;">🫀 PENYAKIT HATI</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;">
-        <div id="d_hepB_positif" class="detail-field"></div>
-        <div id="d_hepB_keluarga" class="detail-field"></div>
-        <div id="d_seksualBerisiko" class="detail-field"></div>
-        <div id="d_transfusiDarah" class="detail-field"></div>
-        <div id="d_hemodialisa" class="detail-field"></div>
-        <div id="d_narkoba" class="detail-field"></div>
-        <div id="d_odhiv" class="detail-field"></div>
-        <div id="d_hepC_gagal" class="detail-field"></div>
-        <div id="d_kolesterol" class="detail-field" style="grid-column:1/-1;"></div>
+        <div id="d_batukTB" class="detail-field" style="grid-column:1/-1;"></div>
       </div>
 
       <!-- Kesehatan Jiwa -->
@@ -1162,21 +1039,6 @@ let fotoData = null; // { dataUrl, name }
 let allData = [];
 try { allData = JSON.parse(localStorage.getItem('ckgData2026') || '[]'); } catch(e) { allData = []; }
 
-// ── INIT ──
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('fotoInput').addEventListener('change', e => {
-    if (e.target.files[0]) handleFoto(e.target.files[0]);
-  });
-
-  const dz = document.getElementById('dropzone');
-  dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
-  dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
-  dz.addEventListener('drop', e => {
-    e.preventDefault(); dz.classList.remove('drag-over');
-    if (e.dataTransfer.files[0]) handleFoto(e.dataTransfer.files[0]);
-  });
-});
-
 // ── NAVIGATION ──
 function goToStep(n) { if (n >= currentStep) return; currentStep = n; showStep(n); }
 
@@ -1184,7 +1046,6 @@ function nextStep(n) {
   if (!validateStep(n)) return;
   currentStep = n + 1;
   showStep(n + 1);
-  if (n + 1 === 6) buildSummary();
 }
 
 function prevStep(n) { currentStep = n - 1; showStep(n - 1); }
@@ -1238,14 +1099,8 @@ function validateStep(step) {
     });
   }
 
-  if (step === 3) {
-    ['statusNikahDemo','disabilitas'].forEach(id => {
-      if (!document.getElementById(id).value) { markErr(id); ok = false; }
-    });
-  }
-
   if (step === 4) {
-    ['batukTB','hepB_positif','hepB_keluarga','seksualBerisiko','transfusiDarah','hemodialisa','narkoba','odhiv','hepC_gagal','kolesterol','jiwa_semangat','jiwa_murung','merokok_aktif','merokok_riwayat','gigi_karies','gigi_cabut'].forEach(id => {
+    ['batukTB','jiwa_semangat','jiwa_murung','merokok_aktif','merokok_riwayat','gigi_karies','gigi_cabut'].forEach(id => {
       if (!document.getElementById(id).value) { markErr(id); ok = false; }
     });
   }
@@ -1258,117 +1113,6 @@ function validateStep(step) {
 
   if (!ok) showToast('Mohon lengkapi semua field yang wajib diisi', 'error');
   return ok;
-}
-
-// ── FOTO ──
-function handleFoto(file) {
-  if (!file.type.startsWith('image/')) { showToast('File harus berupa gambar', 'error'); return; }
-  const reader = new FileReader();
-  reader.onload = e => {
-    fotoData = { dataUrl: e.target.result, name: file.name };
-    document.getElementById('photoImg').src = e.target.result;
-    document.getElementById('photoNameLabel').textContent = file.name;
-    document.getElementById('photoPreview').style.display = 'block';
-    document.getElementById('dropzone').style.display = 'none';
-    document.getElementById('err-foto').classList.remove('show');
-  };
-  reader.readAsDataURL(file);
-}
-
-function removePhoto() {
-  fotoData = null;
-  document.getElementById('fotoInput').value = '';
-  document.getElementById('photoPreview').style.display = 'none';
-  document.getElementById('dropzone').style.display = 'block';
-}
-
-// ── SUMMARY ──
-function buildSummary() {
-  const g = id => document.getElementById(id)?.value || '-';
-  const fmtDate = s => { if (!s||s==='-') return '-'; const d=new Date(s+'T00:00:00'); return d.toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'}); };
-
-  document.getElementById('summaryContent').innerHTML = `
-    <div class="summary-block">
-      <div class="summary-block-title">Identitas Peserta</div>
-      <div class="summary-grid">
-        <div class="s-item full"><div class="s-lbl">Nama Lengkap</div><div class="s-val">${g('namaLengkap')}</div></div>
-        <div class="s-item"><div class="s-lbl">NIK</div><div class="s-val" style="font-family:'JetBrains Mono',monospace;font-size:13px">${g('nik')}</div></div>
-        <div class="s-item"><div class="s-lbl">Satker</div><div class="s-val">${g('satker')}</div></div>
-        <div class="s-item"><div class="s-lbl">NIP / NRP</div><div class="s-val">${g('nipNrp')}</div></div>
-        <div class="s-item"><div class="s-lbl">Tanggal Lahir</div><div class="s-val">${fmtDate(g('tanggalLahir'))}</div></div>
-        <div class="s-item"><div class="s-lbl">Jenis Kelamin</div><div class="s-val">${g('jenisKelamin')}</div></div>
-        <div class="s-item"><div class="s-lbl">No. WhatsApp</div><div class="s-val">${g('noWa')}</div></div>
-      </div>
-    </div>
-    <div class="summary-block">
-      <div class="summary-block-title">Formulir Pendataan</div>
-      <div class="summary-grid">
-        <div class="s-item"><div class="s-lbl">Status Pernikahan</div><div class="s-val">${g('statusNikah')}</div></div>
-        <div class="s-item"><div class="s-lbl">Pekerjaan</div><div class="s-val">${g('pekerjaan')}</div></div>
-        <div class="s-item"><div class="s-lbl">Kelurahan</div><div class="s-val">${g('kelurahan')}</div></div>
-        <div class="s-item"><div class="s-lbl">Kecamatan</div><div class="s-val">${g('kecamatan')}</div></div>
-        <div class="s-item"><div class="s-lbl">Kota/Kabupaten</div><div class="s-val">${g('kotaKab')}</div></div>
-        <div class="s-item"><div class="s-lbl">Provinsi</div><div class="s-val">${g('provinsi')}</div></div>
-        <div class="s-item full"><div class="s-lbl">Alamat Domisili</div><div class="s-val">${g('alamat')}</div></div>
-      </div>
-    </div>
-    <div class="summary-block">
-      <div class="summary-block-title">Demografi</div>
-      <div class="summary-grid">
-        <div class="s-item"><div class="s-lbl">Status Pernikahan</div><div class="s-val">${g('statusNikahDemo')}</div></div>
-        <div class="s-item"><div class="s-lbl">Status Disabilitas</div><div class="s-val">${g('disabilitas')}</div></div>
-      </div>
-    </div>
-    <div class="summary-block">
-      <div class="summary-block-title">Faktor Risiko TB</div>
-      <div class="summary-grid">
-        <div class="s-item full"><div class="s-lbl">Riwayat Batuk</div><div class="s-val">${g('batukTB')}</div></div>
-      </div>
-    </div>
-    <div class="summary-block">
-      <div class="summary-block-title">Penyakit Hati</div>
-      <div class="summary-grid">
-        <div class="s-item"><div class="s-lbl">Hepatitis B Positif</div><div class="s-val">${g('hepB_positif')}</div></div>
-        <div class="s-item"><div class="s-lbl">Keluarga Hep B</div><div class="s-val">${g('hepB_keluarga')}</div></div>
-        <div class="s-item"><div class="s-lbl">Seksual Berisiko</div><div class="s-val">${g('seksualBerisiko')}</div></div>
-        <div class="s-item"><div class="s-lbl">Transfusi Darah</div><div class="s-val">${g('transfusiDarah')}</div></div>
-        <div class="s-item"><div class="s-lbl">Hemodialisa</div><div class="s-val">${g('hemodialisa')}</div></div>
-        <div class="s-item"><div class="s-lbl">Narkoba</div><div class="s-val">${g('narkoba')}</div></div>
-        <div class="s-item"><div class="s-lbl">ODHIV</div><div class="s-val">${g('odhiv')}</div></div>
-        <div class="s-item"><div class="s-lbl">Hep C Gagal Obat</div><div class="s-val">${g('hepC_gagal')}</div></div>
-        <div class="s-item full"><div class="s-lbl">Kolesterol Tinggi</div><div class="s-val">${g('kolesterol')}</div></div>
-      </div>
-    </div>
-    <div class="summary-block">
-      <div class="summary-block-title">Kesehatan Jiwa</div>
-      <div class="summary-grid">
-        <div class="s-item"><div class="s-lbl">Tidak Bersemangat</div><div class="s-val">${g('jiwa_semangat')}</div></div>
-        <div class="s-item"><div class="s-lbl">Murung/Tertekan</div><div class="s-val">${g('jiwa_murung')}</div></div>
-      </div>
-    </div>
-    <div class="summary-block">
-      <div class="summary-block-title">Skrining Merokok</div>
-      <div class="summary-grid">
-        <div class="s-item"><div class="s-lbl">Merokok Aktif</div><div class="s-val">${g('merokok_aktif')}</div></div>
-        <div class="s-item"><div class="s-lbl">Riwayat Merokok</div><div class="s-val">${g('merokok_riwayat')}</div></div>
-      </div>
-    </div>
-    <div class="summary-block">
-      <div class="summary-block-title">Skrining Gigi</div>
-      <div class="summary-grid">
-        <div class="s-item"><div class="s-lbl">Gigi Berlubang/Karies</div><div class="s-val">${g('gigi_karies')}</div></div>
-        <div class="s-item"><div class="s-lbl">Gigi Dicabut/Hilang</div><div class="s-val">${g('gigi_cabut')}</div></div>
-      </div>
-    </div>
-    <div class="summary-block">
-      <div class="summary-block-title">Pemeriksaan Kesehatan</div>
-      <div class="summary-grid">
-        <div class="s-item"><div class="s-lbl">Berat Badan</div><div class="s-val">${g('beratBadan')} kg</div></div>
-        <div class="s-item"><div class="s-lbl">Tinggi Badan</div><div class="s-val">${g('tinggiBadan')} cm</div></div>
-        <div class="s-item"><div class="s-lbl">Hipertensi</div><div class="s-val">${g('hipertensi')}</div></div>
-        <div class="s-item"><div class="s-lbl">Diabetes</div><div class="s-val">${g('diabetes')}</div></div>
-      </div>
-    </div>`;
 }
 
 // ── SUBMIT ──
@@ -1392,18 +1136,18 @@ async function submitData() {
     kotaKab: g('kotaKab'),
     provinsi: g('provinsi'),
     alamat: g('alamat'),
-    statusNikahDemo: g('statusNikahDemo'),
-    disabilitas: g('disabilitas'),
+    statusNikahDemo: '',
+    disabilitas: '',
     batukTB: g('batukTB'),
-    hepB_positif: g('hepB_positif'),
-    hepB_keluarga: g('hepB_keluarga'),
-    seksualBerisiko: g('seksualBerisiko'),
-    transfusiDarah: g('transfusiDarah'),
-    hemodialisa: g('hemodialisa'),
-    narkoba: g('narkoba'),
-    odhiv: g('odhiv'),
-    hepC_gagal: g('hepC_gagal'),
-    kolesterol: g('kolesterol'),
+    hepB_positif: '',
+    hepB_keluarga: '',
+    seksualBerisiko: '',
+    transfusiDarah: '',
+    hemodialisa: '',
+    narkoba: '',
+    odhiv: '',
+    hepC_gagal: '',
+    kolesterol: '',
     jiwa_semangat: g('jiwa_semangat'),
     jiwa_murung: g('jiwa_murung'),
     merokok_aktif: g('merokok_aktif'),
@@ -1612,20 +1356,10 @@ async function refreshAdminData() {
         kotaKab: get(13),
         provinsi: get(14),
         alamat: get(15),
-        disabilitas: get(17),
-        // Faktor Risiko
+        // disabilitas dan field penyakit hati sudah dihapus dari form, kolom tetap ada di Sheets tapi tidak dipakai
         batukTB:         get(18),
-        hepB_positif:    get(19),
-        hepB_keluarga:   get(20),
-        seksualBerisiko: get(21),
-        transfusiDarah:  get(22),
-        hemodialisa:     get(23),
-        narkoba:         get(24),
-        odhiv:           get(25),
-        hepC_gagal:      get(26),
-        kolesterol:      get(27),
-        jiwa_semangat:   get(28),
-        jiwa_murung:     get(29),
+        jiwa_semangat:   get(27),
+        jiwa_murung:     get(28),
         merokok_aktif:   get(30),
         merokok_riwayat: get(31),
         gigi_karies:     get(32),
@@ -1740,7 +1474,6 @@ function renderAdminTable() {
       <td style="padding:9px 12px;font-size:12px;">${d.statusNikah}</td>
       <td style="padding:9px 12px;font-size:12px;">${d.pekerjaan}</td>
       <td style="padding:9px 12px;font-size:11px;max-width:140px;word-wrap:break-word;">${d.alamat}</td>
-      <td style="padding:9px 12px;font-size:12px;">${d.disabilitas}</td>
       <td style="padding:9px 12px;font-size:12px;">${d.batukTB}</td>
       <td style="padding:9px 12px;text-align:center;">${tensiVal}</td>
       <td style="padding:9px 12px;text-align:center;">${gulaVal}</td>
@@ -1781,19 +1514,7 @@ function showDetailModal(idx) {
   document.getElementById('d_kotaKab').innerHTML = field('Kota / Kabupaten', d.kotaKab);
   document.getElementById('d_provinsi').innerHTML = field('Provinsi', d.provinsi);
   document.getElementById('d_alamat').innerHTML = field('Alamat Domisili', d.alamat);
-  document.getElementById('d_disabilitas').innerHTML = field('Status Disabilitas', d.disabilitas);
   document.getElementById('d_batukTB').innerHTML = field('Riwayat Batuk TB', d.batukTB);
-
-  // Penyakit Hati
-  document.getElementById('d_hepB_positif').innerHTML = field('Hep B Positif', d.hepB_positif);
-  document.getElementById('d_hepB_keluarga').innerHTML = field('Keluarga Hep B', d.hepB_keluarga);
-  document.getElementById('d_seksualBerisiko').innerHTML = field('Seksual Berisiko', d.seksualBerisiko);
-  document.getElementById('d_transfusiDarah').innerHTML = field('Transfusi Darah', d.transfusiDarah);
-  document.getElementById('d_hemodialisa').innerHTML = field('Hemodialisa', d.hemodialisa);
-  document.getElementById('d_narkoba').innerHTML = field('Narkoba/Adiktif', d.narkoba);
-  document.getElementById('d_odhiv').innerHTML = field('ODHIV', d.odhiv);
-  document.getElementById('d_hepC_gagal').innerHTML = field('Hep C Gagal Obat', d.hepC_gagal);
-  document.getElementById('d_kolesterol').innerHTML = field('Kolesterol Tinggi', d.kolesterol);
 
   // Kesehatan Jiwa
   document.getElementById('d_jiwa_semangat').innerHTML = field('Tidak Bersemangat', d.jiwa_semangat);
@@ -1922,11 +1643,11 @@ function exportAdminExcel() {
     if (m) return `${String(m[3]).padStart(2,'0')}/${String(Number(m[2])+1).padStart(2,'0')}/${m[1]}`;
     return s;
   };
-  const headers = ['No','Timestamp','Nama Lengkap','NIK','Satker','NIP/NRP','Tgl Lahir','Jenis Kelamin','No. WhatsApp','Status Nikah','Pekerjaan','Alamat','Disabilitas','Riwayat Batuk','Link Foto'];
-  const rows = adminRawData.map((d,i) => [i+1, d.timestamp, d.nama, d.nik, d.satker, d.nipNrp, fmtDate(d.tglLahir), d.kelamin, d.noWa, d.statusNikah, d.pekerjaan, d.alamat, d.disabilitas, d.batukTB, d.linkFoto||'-']);
+  const headers = ['No','Timestamp','Nama Lengkap','NIK','Satker','NIP/NRP','Tgl Lahir','Jenis Kelamin','No. WhatsApp','Status Nikah','Pekerjaan','Kelurahan','Kecamatan','Kota/Kabupaten','Provinsi','Alamat','Riwayat Batuk TB','Jiwa-Semangat','Jiwa-Murung','Merokok Aktif','Riwayat Merokok','Gigi Karies','Gigi Dicabut','Berat Badan','Tinggi Badan','Hipertensi','Diabetes','Tensi','Gula Darah','Kolesterol'];
+  const rows = adminRawData.map((d,i) => [i+1, d.timestamp, d.nama, d.nik, d.satker, d.nipNrp, fmtDate(d.tglLahir), d.kelamin, d.noWa, d.statusNikah, d.pekerjaan, d.kelurahan, d.kecamatan, d.kotaKab, d.provinsi, d.alamat, d.batukTB, d.jiwa_semangat, d.jiwa_murung, d.merokok_aktif, d.merokok_riwayat, d.gigi_karies, d.gigi_cabut, d.beratBadan, d.tinggiBadan, d.hipertensi, d.diabetes, d.tensi||'-', d.gulaDarah||'-', d.kolesteralHasil||'-']);
   const wb = XLSX.utils.book_new();
   const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
-  ws['!cols'] = [{wch:4},{wch:20},{wch:25},{wch:18},{wch:22},{wch:14},{wch:12},{wch:12},{wch:16},{wch:16},{wch:14},{wch:35},{wch:16},{wch:16},{wch:30}];
+  ws['!cols'] = headers.map(() => ({wch:16}));
   XLSX.utils.book_append_sheet(wb, ws, 'Data CKG 2026');
   const now = new Date();
   XLSX.writeFile(wb, `Admin_CKG2026_${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}.xlsx`);
