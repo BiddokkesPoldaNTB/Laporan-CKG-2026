@@ -351,10 +351,9 @@
   <div class="step-nav">
     <button class="step-btn active" id="sb1" onclick="goToStep(1)"><span class="step-num">1</span><span>Identitas</span></button>
     <button class="step-btn" id="sb2" onclick="goToStep(2)"><span class="step-num">2</span><span>Pendataan</span></button>
-    <button class="step-btn" id="sb3" onclick="goToStep(3)"><span class="step-num">3</span><span>Demografi</span></button>
-    <button class="step-btn" id="sb4" onclick="goToStep(4)"><span class="step-num">4</span><span>Faktor Risiko</span></button>
-    <button class="step-btn" id="sb5" onclick="goToStep(5)"><span class="step-num">5</span><span>Pemeriksaan</span></button>
-    <button class="step-btn" id="sb6" onclick="goToStep(6)"><span class="step-num">6</span><span>Simpan</span></button>
+    <button class="step-btn" id="sb3" onclick="goToStep(3)"><span class="step-num">3</span><span>Faktor Risiko</span></button>
+    <button class="step-btn" id="sb4" onclick="goToStep(4)"><span class="step-num">4</span><span>Pemeriksaan</span></button>
+    <button class="step-btn" id="sb5" onclick="goToStep(5)"><span class="step-num">5</span><span>Simpan</span></button>
   </div>
 
   <!-- ═══ STEP 1: IDENTITAS ═══ -->
@@ -428,12 +427,22 @@
 
           <div class="form-group">
             <label class="form-label">Jenis Kelamin <span class="req">*</span></label>
-            <select class="form-select" id="jenisKelamin">
+            <select class="form-select" id="jenisKelamin" onchange="toggleHamilField()">
               <option value="">— Pilih Jenis Kelamin —</option>
               <option>Laki-laki</option>
               <option>Perempuan</option>
             </select>
             <span class="error-msg" id="err-jenisKelamin">Jenis kelamin wajib dipilih</span>
+          </div>
+
+          <div class="form-group" id="hamilGroup" style="display:none">
+            <label class="form-label">Apakah sekarang Anda sedang hamil? <span class="req">*</span></label>
+            <select class="form-select" id="statusHamil">
+              <option value="">— Pilih Jawaban —</option>
+              <option>Ya</option>
+              <option>Tidak</option>
+            </select>
+            <span class="error-msg" id="err-statusHamil">Pertanyaan ini wajib dijawab</span>
           </div>
 
           <div class="form-group full">
@@ -479,6 +488,7 @@
               <option value="">— Pilih Pekerjaan —</option>
               <option>Polri</option>
               <option>ASN Polri</option>
+              <option>ASN (Pemerintahan)</option>
               <option>Belum/Tidak Bekerja</option>
               <option>Pelajar</option>
               <option>Mahasiswa</option>
@@ -529,25 +539,8 @@
     </div>
   </div>
 
-  <!-- ═══ STEP 3: DEMOGRAFI ═══ -->
+  <!-- ═══ STEP 3: FAKTOR RISIKO ═══ -->
   <div id="step3" class="step-content" style="display:none">
-    <div class="card">
-      <div class="card-header green">
-        <div class="card-icon ci-green">🌍</div>
-        <div><h2>Demografi</h2><p>Data demografi peserta CKG 2026</p></div>
-      </div>
-      <div class="card-body">
-        <p style="color:#64748b;font-size:14px;">Tidak ada pertanyaan tambahan pada tahap ini. Klik "Selanjutnya" untuk melanjutkan ke Faktor Risiko.</p>
-      </div>
-    </div>
-    <div class="nav-btns">
-      <button class="btn btn-outline" onclick="prevStep(3)">← Kembali</button>
-      <button class="btn btn-primary" onclick="nextStep(3)">Selanjutnya →</button>
-    </div>
-  </div>
-
-  <!-- ═══ STEP 4: FAKTOR RISIKO ═══ -->
-  <div id="step4" class="step-content" style="display:none">
 
     <!-- Faktor Risiko TB -->
     <div class="card">
@@ -672,11 +665,13 @@
     </div>
 
     <div class="nav-btns">
-      <button class="btn btn-outline" onclick="prevStep(4)">← Kembali</button>
-      <button class="btn btn-primary" onclick="nextStep(4)">Selanjutnya →</button>
+      <button class="btn btn-outline" onclick="prevStep(3)">← Kembali</button>
+      <button class="btn btn-primary" onclick="nextStep(3)">Selanjutnya →</button>
     </div>
   </div>
-  <div id="step5" class="step-content" style="display:none">
+
+  <!-- ═══ STEP 4: PEMERIKSAAN KESEHATAN ═══ -->
+  <div id="step4" class="step-content" style="display:none">
 
     <!-- Gizi -->
     <div class="card">
@@ -741,13 +736,13 @@
     </div>
 
     <div class="nav-btns">
-      <button class="btn btn-outline" onclick="prevStep(5)">← Kembali</button>
-      <button class="btn btn-primary" onclick="nextStep(5)">Selanjutnya →</button>
+      <button class="btn btn-outline" onclick="prevStep(4)">← Kembali</button>
+      <button class="btn btn-primary" onclick="nextStep(4)">Selanjutnya →</button>
     </div>
   </div>
 
-  <!-- ═══ STEP 6: SIMPAN ═══ -->
-  <div id="step6" class="step-content" style="display:none">
+  <!-- ═══ STEP 5: SIMPAN ═══ -->
+  <div id="step5" class="step-content" style="display:none">
 
     <div class="card">
       <div class="card-header teal">
@@ -762,7 +757,7 @@
     </div>
 
     <div class="nav-btns">
-      <button class="btn btn-outline" onclick="prevStep(6)">← Edit Data</button>
+      <button class="btn btn-outline" onclick="prevStep(5)">← Edit Data</button>
       <button class="btn btn-success" id="saveBtn" onclick="submitData()">💾 Simpan Data</button>
     </div>
   </div>
@@ -914,7 +909,8 @@
         <div id="d_nipNrp" class="detail-field"></div>
         <div id="d_tglLahir" class="detail-field"></div>
         <div id="d_kelamin" class="detail-field"></div>
-        <div id="d_noWa" class="detail-field"></div>
+        <div id="d_statusHamil" class="detail-field"></div>
+        <div id="d_noWa" class="detail-field" style="grid-column:1/-1;"></div>
       </div>
 
       <!-- Pendataan -->
@@ -1026,11 +1022,10 @@ const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbws6sePeXA_4TP2
 
 const STEPS = [
   null,
-  { label: 'Identitas Peserta',       pct: 17 },
-  { label: 'Formulir Pendataan',      pct: 33 },
-  { label: 'Demografi',               pct: 50 },
-  { label: 'Faktor Risiko',           pct: 67 },
-  { label: 'Pemeriksaan Kesehatan',   pct: 83 },
+  { label: 'Identitas Peserta',       pct: 20 },
+  { label: 'Formulir Pendataan',      pct: 40 },
+  { label: 'Faktor Risiko',           pct: 60 },
+  { label: 'Pemeriksaan Kesehatan',   pct: 80 },
   { label: 'Simpan Data',             pct: 100 },
 ];
 
@@ -1064,7 +1059,7 @@ function showStep(n) {
   const info = STEPS[n];
   document.getElementById('progressFill').style.width = info.pct + '%';
   document.getElementById('progressPct').textContent = info.pct + '%';
-  document.getElementById('progressLabel').textContent = `Langkah ${n} dari 6 · ${info.label}`;
+  document.getElementById('progressLabel').textContent = `Langkah ${n} dari 5 · ${info.label}`;
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -1081,6 +1076,18 @@ function markErr(id) {
   if (em) em.classList.add('show');
 }
 
+function toggleHamilField() {
+  const jk = document.getElementById('jenisKelamin').value;
+  const grp = document.getElementById('hamilGroup');
+  if (jk === 'Perempuan') {
+    grp.style.display = 'block';
+  } else {
+    grp.style.display = 'none';
+    document.getElementById('statusHamil').value = '';
+    document.getElementById('err-statusHamil').classList.remove('show');
+  }
+}
+
 function validateStep(step) {
   clearErrors();
   let ok = true;
@@ -1091,6 +1098,9 @@ function validateStep(step) {
     });
     const nik = document.getElementById('nik').value.trim();
     if (!nik || nik.length !== 16 || isNaN(nik)) { markErr('nik'); ok = false; }
+    if (document.getElementById('jenisKelamin').value === 'Perempuan' && !document.getElementById('statusHamil').value) {
+      markErr('statusHamil'); ok = false;
+    }
   }
 
   if (step === 2) {
@@ -1099,13 +1109,13 @@ function validateStep(step) {
     });
   }
 
-  if (step === 4) {
+  if (step === 3) {
     ['batukTB','jiwa_semangat','jiwa_murung','merokok_aktif','merokok_riwayat','gigi_karies','gigi_cabut'].forEach(id => {
       if (!document.getElementById(id).value) { markErr(id); ok = false; }
     });
   }
 
-  if (step === 5) {
+  if (step === 4) {
     ['beratBadan','tinggiBadan','hipertensi','diabetes'].forEach(id => {
       if (!document.getElementById(id).value) { markErr(id); ok = false; }
     });
@@ -1128,6 +1138,7 @@ async function submitData() {
     nipNrp: g('nipNrp'),
     tanggalLahir: g('tanggalLahir'),
     jenisKelamin: g('jenisKelamin'),
+    statusHamil: g('statusHamil'),
     noWa: g('noWa'),
     statusNikah: g('statusNikah'),
     pekerjaan: g('pekerjaan'),
@@ -1371,6 +1382,7 @@ async function refreshAdminData() {
         tensi:           get(38),
         gulaDarah:       get(39),
         kolesteralHasil: get(40),
+        statusHamil:     get(41),
         linkFoto:        null,
       };
     }).filter(d => d.nama !== '-' && d.nama !== 'Nama Lengkap');
@@ -1506,6 +1518,9 @@ function showDetailModal(idx) {
   document.getElementById('d_nipNrp').innerHTML = field('NIP / NRP', d.nipNrp);
   document.getElementById('d_tglLahir').innerHTML = field('Tanggal Lahir', fmtDate(d.tglLahir));
   document.getElementById('d_kelamin').innerHTML = field('Jenis Kelamin', d.kelamin);
+  document.getElementById('d_statusHamil').innerHTML = (d.kelamin === 'Perempuan' && d.statusHamil)
+    ? field('Sedang Hamil', d.statusHamil)
+    : field('Sedang Hamil', '-');
   document.getElementById('d_noWa').innerHTML = field('No. WhatsApp', d.noWa);
   document.getElementById('d_statusNikah').innerHTML = field('Status Nikah', d.statusNikah);
   document.getElementById('d_pekerjaan').innerHTML = field('Pekerjaan', d.pekerjaan);
