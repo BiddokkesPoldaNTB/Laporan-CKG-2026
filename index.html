@@ -379,6 +379,16 @@
           </div>
 
           <div class="form-group">
+            <label class="form-label">Apakah Anda anggota Polda NTB? <span class="req">*</span></label>
+            <select class="form-select" id="anggotaPolda" onchange="toggleSatkerField()">
+              <option value="">— Pilih Jawaban —</option>
+              <option>Ya</option>
+              <option>Tidak</option>
+            </select>
+            <span class="error-msg" id="err-anggotaPolda">Pertanyaan ini wajib dijawab</span>
+          </div>
+
+          <div class="form-group" id="satkerGroup" style="display:none">
             <label class="form-label">Satker <span class="req">*</span></label>
             <select class="form-select" id="satker">
               <option value="">— Pilih Satker —</option>
@@ -413,16 +423,38 @@
             <span class="error-msg" id="err-satker">Satker wajib dipilih</span>
           </div>
 
-          <div class="form-group">
-            <label class="form-label">NIP / NRP <span class="req">*</span></label>
-            <input type="text" class="form-input" id="nipNrp" placeholder="Nomor Induk Pegawai / NRP">
-            <span class="error-msg" id="err-nipNrp">NIP/NRP wajib diisi</span>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Tanggal Lahir <span class="req">*</span><span class="hint">(contoh: 17 Januari 2009)</span></label>
-            <input type="text" class="form-input" id="tanggalLahir" placeholder="Tanggal Bulan Tahun, contoh: 17 Januari 2009">
-            <span class="error-msg" id="err-tanggalLahir">Tanggal lahir wajib diisi</span>
+          <!-- Tanggal Lahir: 3 field -->
+          <div class="form-group full">
+            <label class="form-label">Tanggal Lahir <span class="req">*</span></label>
+            <div style="display:grid;grid-template-columns:1fr 2fr 1fr;gap:10px;">
+              <div>
+                <input type="number" class="form-input" id="tglHari" placeholder="Tgl" min="1" max="31" inputmode="numeric" style="text-align:center;">
+                <span style="font-size:11px;color:#94a3b8;margin-top:3px;display:block;text-align:center;">Tanggal</span>
+              </div>
+              <div>
+                <select class="form-select" id="tglBulan">
+                  <option value="">— Bulan —</option>
+                  <option value="Januari">Januari</option>
+                  <option value="Februari">Februari</option>
+                  <option value="Maret">Maret</option>
+                  <option value="April">April</option>
+                  <option value="Mei">Mei</option>
+                  <option value="Juni">Juni</option>
+                  <option value="Juli">Juli</option>
+                  <option value="Agustus">Agustus</option>
+                  <option value="September">September</option>
+                  <option value="Oktober">Oktober</option>
+                  <option value="November">November</option>
+                  <option value="Desember">Desember</option>
+                </select>
+                <span style="font-size:11px;color:#94a3b8;margin-top:3px;display:block;text-align:center;">Bulan</span>
+              </div>
+              <div>
+                <input type="number" class="form-input" id="tglTahun" placeholder="Tahun" min="1900" max="2025" inputmode="numeric" style="text-align:center;">
+                <span style="font-size:11px;color:#94a3b8;margin-top:3px;display:block;text-align:center;">Tahun</span>
+              </div>
+            </div>
+            <span class="error-msg" id="err-tanggalLahir">Tanggal lahir wajib diisi lengkap</span>
           </div>
 
           <div class="form-group">
@@ -906,7 +938,7 @@
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;">
         <div id="d_nik" class="detail-field"></div>
         <div id="d_satker" class="detail-field"></div>
-        <div id="d_nipNrp" class="detail-field"></div>
+        <div id="d_anggotaPolda" class="detail-field"></div>
         <div id="d_tglLahir" class="detail-field"></div>
         <div id="d_kelamin" class="detail-field"></div>
         <div id="d_statusHamil" class="detail-field"></div>
@@ -1076,6 +1108,18 @@ function markErr(id) {
   if (em) em.classList.add('show');
 }
 
+function toggleSatkerField() {
+  const val = document.getElementById('anggotaPolda').value;
+  const grp = document.getElementById('satkerGroup');
+  if (val === 'Ya') {
+    grp.style.display = 'block';
+  } else {
+    grp.style.display = 'none';
+    document.getElementById('satker').value = '';
+    document.getElementById('err-satker').classList.remove('show');
+  }
+}
+
 function toggleHamilField() {
   const jk = document.getElementById('jenisKelamin').value;
   const grp = document.getElementById('hamilGroup');
@@ -1093,11 +1137,19 @@ function validateStep(step) {
   let ok = true;
 
   if (step === 1) {
-    ['namaLengkap','satker','nipNrp','tanggalLahir','jenisKelamin','noWa'].forEach(id => {
+    ['namaLengkap','anggotaPolda','jenisKelamin','noWa'].forEach(id => {
       if (!document.getElementById(id).value.trim()) { markErr(id); ok = false; }
     });
     const nik = document.getElementById('nik').value.trim();
     if (!nik || nik.length !== 16 || isNaN(nik)) { markErr('nik'); ok = false; }
+    // Satker wajib jika anggota Polda
+    if (document.getElementById('anggotaPolda').value === 'Ya' && !document.getElementById('satker').value) {
+      markErr('satker'); ok = false;
+    }
+    // Tanggal lahir 3 field
+    if (!document.getElementById('tglHari').value || !document.getElementById('tglBulan').value || !document.getElementById('tglTahun').value) {
+      markErr('tanggalLahir'); ok = false;
+    }
     if (document.getElementById('jenisKelamin').value === 'Perempuan' && !document.getElementById('statusHamil').value) {
       markErr('statusHamil'); ok = false;
     }
@@ -1134,9 +1186,9 @@ async function submitData() {
     timestamp: new Date().toISOString(),
     namaLengkap: g('namaLengkap'),
     nik: g('nik'),
-    satker: g('satker'),
-    nipNrp: g('nipNrp'),
-    tanggalLahir: g('tanggalLahir'),
+    satker: g('satker') || 'Bukan Anggota',
+    anggotaPolda: g('anggotaPolda'),
+    tanggalLahir: [g('tglHari'), g('tglBulan'), g('tglTahun')].filter(Boolean).join(' '),
     jenisKelamin: g('jenisKelamin'),
     statusHamil: g('statusHamil'),
     noWa: g('noWa'),
@@ -1356,8 +1408,9 @@ async function refreshAdminData() {
         nama: get(2),
         nik: get(3),
         satker: get(4),
-        nipNrp: get(5),
-        tglLahir: get(6),
+        nipNrp: get(5),  // sekarang berisi anggotaPolda (Ya/Tidak)
+        anggotaPolda: get(5),
+        tglLahir: get(6), // teks bebas: "17 Januari 2000"
         kelamin: get(7),
         noWa: get(8),
         statusNikah: get(9),
@@ -1514,9 +1567,9 @@ function showDetailModal(idx) {
 
   document.getElementById('detailNama').textContent = d.nama;
   document.getElementById('d_nik').innerHTML = field('NIK', d.nik);
-  document.getElementById('d_satker').innerHTML = field('Satker', d.satker);
-  document.getElementById('d_nipNrp').innerHTML = field('NIP / NRP', d.nipNrp);
-  document.getElementById('d_tglLahir').innerHTML = field('Tanggal Lahir', fmtDate(d.tglLahir));
+  document.getElementById('d_satker').innerHTML = field('Satker', d.satker && d.satker !== 'Bukan Anggota' ? d.satker : '-');
+  document.getElementById('d_anggotaPolda').innerHTML = field('Anggota Polda NTB', d.anggotaPolda);
+  document.getElementById('d_tglLahir').innerHTML = field('Tanggal Lahir', d.tglLahir);
   document.getElementById('d_kelamin').innerHTML = field('Jenis Kelamin', d.kelamin);
   document.getElementById('d_statusHamil').innerHTML = (d.kelamin === 'Perempuan' && d.statusHamil)
     ? field('Sedang Hamil', d.statusHamil)
