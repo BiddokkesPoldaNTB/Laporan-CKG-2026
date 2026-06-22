@@ -1577,7 +1577,7 @@ function showDetailModal(idx) {
   document.getElementById('d_nik').innerHTML = field('NIK', d.nik);
   document.getElementById('d_satker').innerHTML = field('Satker', d.satker && d.satker !== 'Bukan Anggota' ? d.satker : '-');
   document.getElementById('d_anggotaPolda').innerHTML = field('Anggota Polda NTB', d.anggotaPolda);
-  document.getElementById('d_tglLahir').innerHTML = field('Tanggal Lahir', d.tglLahir);
+  document.getElementById('d_tglLahir').innerHTML = field('Tanggal Lahir', fmtDate(d.tglLahir));
   document.getElementById('d_kelamin').innerHTML = field('Jenis Kelamin', d.kelamin);
   document.getElementById('d_statusHamil').innerHTML = (d.kelamin === 'Perempuan' && d.statusHamil)
     ? field('Sedang Hamil', d.statusHamil)
