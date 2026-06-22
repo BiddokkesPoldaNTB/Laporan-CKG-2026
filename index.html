@@ -353,7 +353,6 @@
     <button class="step-btn" id="sb2" onclick="goToStep(2)"><span class="step-num">2</span><span>Pendataan</span></button>
     <button class="step-btn" id="sb3" onclick="goToStep(3)"><span class="step-num">3</span><span>Faktor Risiko</span></button>
     <button class="step-btn" id="sb4" onclick="goToStep(4)"><span class="step-num">4</span><span>Pemeriksaan</span></button>
-    <button class="step-btn" id="sb5" onclick="goToStep(5)"><span class="step-num">5</span><span>Simpan</span></button>
   </div>
 
   <!-- ═══ STEP 1: IDENTITAS ═══ -->
@@ -583,7 +582,7 @@
       <div class="card-body">
         <div class="form-grid">
           <div class="form-group full">
-            <label class="form-label">Apakah Anda pernah atau sedang mengalami batuk yang tidak sembuh-sembuh? <span class="req">*</span></label>
+            <label class="form-label">Apakah Anda pernah atau sedang mengalami batuk yang tidak sembuh-sembuh?</label>
             <select class="form-select" id="batukTB">
               <option value="">— Pilih Jawaban —</option>
               <option>Ya, Lebih dari 2 minggu</option>
@@ -607,7 +606,7 @@
         <div class="form-grid">
 
           <div class="form-group full">
-            <label class="form-label">1. Dalam 2 minggu terakhir, seberapa sering Anda kurang/tidak bersemangat dalam melakukan kegiatan sehari-hari? <span class="req">*</span></label>
+            <label class="form-label">1. Dalam 2 minggu terakhir, seberapa sering Anda kurang/tidak bersemangat dalam melakukan kegiatan sehari-hari?</label>
             <select class="form-select" id="jiwa_semangat">
               <option value="">— Pilih Jawaban —</option>
               <option>Tidak sama sekali</option>
@@ -619,7 +618,7 @@
           </div>
 
           <div class="form-group full">
-            <label class="form-label">2. Dalam 2 minggu terakhir, seberapa sering Anda merasa murung, tertekan, atau putus asa? <span class="req">*</span></label>
+            <label class="form-label">2. Dalam 2 minggu terakhir, seberapa sering Anda merasa murung, tertekan, atau putus asa?</label>
             <select class="form-select" id="jiwa_murung">
               <option value="">— Pilih Jawaban —</option>
               <option>Tidak sama sekali</option>
@@ -644,7 +643,7 @@
         <div class="form-grid">
 
           <div class="form-group full">
-            <label class="form-label">1. Apakah Anda merokok dalam setahun terakhir ini? <span class="req">*</span></label>
+            <label class="form-label">1. Apakah Anda merokok dalam setahun terakhir ini?</label>
             <select class="form-select" id="merokok_aktif">
               <option value="">— Pilih Jawaban —</option>
               <option>Ya</option><option>Tidak</option>
@@ -653,7 +652,7 @@
           </div>
 
           <div class="form-group full">
-            <label class="form-label">2. Apakah Anda pernah merokok sebelumnya? <span class="req">*</span></label>
+            <label class="form-label">2. Apakah Anda pernah merokok sebelumnya?</label>
             <select class="form-select" id="merokok_riwayat">
               <option value="">— Pilih Jawaban —</option>
               <option>Ya</option><option>Tidak</option>
@@ -675,7 +674,7 @@
         <div class="form-grid">
 
           <div class="form-group full">
-            <label class="form-label">1. Apakah ada gigi Anda berlubang atau Karies? <span class="req">*</span></label>
+            <label class="form-label">1. Apakah ada gigi Anda berlubang atau Karies?</label>
             <select class="form-select" id="gigi_karies">
               <option value="">— Pilih Jawaban —</option>
               <option>Ya</option><option>Tidak</option>
@@ -684,7 +683,7 @@
           </div>
 
           <div class="form-group full">
-            <label class="form-label">2. Apakah ada gigi Anda yang dicabut/hilang? <span class="req">*</span></label>
+            <label class="form-label">2. Apakah ada gigi Anda yang dicabut/hilang?</label>
             <select class="form-select" id="gigi_cabut">
               <option value="">— Pilih Jawaban —</option>
               <option>Ya</option><option>Tidak</option>
@@ -736,7 +735,7 @@
       <div class="card-body">
         <div class="form-grid">
           <div class="form-group full">
-            <label class="form-label">Apakah Anda pernah dinyatakan tekanan darah tinggi (hipertensi)? <span class="req">*</span></label>
+            <label class="form-label">Apakah Anda pernah dinyatakan tekanan darah tinggi (hipertensi)?</label>
             <select class="form-select" id="hipertensi">
               <option value="">— Pilih Jawaban —</option>
               <option>Ya</option><option>Tidak</option>
@@ -756,7 +755,7 @@
       <div class="card-body">
         <div class="form-grid">
           <div class="form-group full">
-            <label class="form-label">1. Apakah Anda pernah dinyatakan Diabetes atau kencing manis? <span class="req">*</span></label>
+            <label class="form-label">1. Apakah Anda pernah dinyatakan Diabetes atau kencing manis?</label>
             <select class="form-select" id="diabetes">
               <option value="">— Pilih Jawaban —</option>
               <option>Ya</option><option>Tidak</option>
@@ -769,27 +768,6 @@
 
     <div class="nav-btns">
       <button class="btn btn-outline" onclick="prevStep(4)">← Kembali</button>
-      <button class="btn btn-primary" onclick="nextStep(4)">Selanjutnya →</button>
-    </div>
-  </div>
-
-  <!-- ═══ STEP 5: SIMPAN ═══ -->
-  <div id="step5" class="step-content" style="display:none">
-
-    <div class="card">
-      <div class="card-header teal">
-        <div class="card-icon ci-teal">✅</div>
-        <div><h2>Selesai!</h2><p>Semua data sudah lengkap, klik tombol di bawah untuk menyimpan</p></div>
-      </div>
-      <div class="card-body" style="text-align:center;padding:48px 24px;">
-        <div style="font-size:56px;margin-bottom:16px;">🎉</div>
-        <h3 style="font-size:18px;font-weight:800;color:#0f2340;margin-bottom:8px;">Data Anda siap disimpan</h3>
-        <p style="color:#64748b;font-size:14px;max-width:420px;margin:0 auto;">Pastikan seluruh data yang Anda isi sudah benar. Jika ingin memeriksa kembali, klik "Edit Data" untuk kembali ke langkah sebelumnya.</p>
-      </div>
-    </div>
-
-    <div class="nav-btns">
-      <button class="btn btn-outline" onclick="prevStep(5)">← Edit Data</button>
       <button class="btn btn-success" id="saveBtn" onclick="submitData()">💾 Simpan Data</button>
     </div>
   </div>
@@ -1054,11 +1032,10 @@ const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbws6sePeXA_4TP2
 
 const STEPS = [
   null,
-  { label: 'Identitas Peserta',       pct: 20 },
-  { label: 'Formulir Pendataan',      pct: 40 },
-  { label: 'Faktor Risiko',           pct: 60 },
-  { label: 'Pemeriksaan Kesehatan',   pct: 80 },
-  { label: 'Simpan Data',             pct: 100 },
+  { label: 'Identitas Peserta',       pct: 25 },
+  { label: 'Formulir Pendataan',      pct: 50 },
+  { label: 'Faktor Risiko',           pct: 75 },
+  { label: 'Pemeriksaan Kesehatan',   pct: 100 },
 ];
 
 let currentStep = 1;
@@ -1091,7 +1068,7 @@ function showStep(n) {
   const info = STEPS[n];
   document.getElementById('progressFill').style.width = info.pct + '%';
   document.getElementById('progressPct').textContent = info.pct + '%';
-  document.getElementById('progressLabel').textContent = `Langkah ${n} dari 5 · ${info.label}`;
+  document.getElementById('progressLabel').textContent = `Langkah ${n} dari 4 · ${info.label}`;
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -1161,14 +1138,11 @@ function validateStep(step) {
     });
   }
 
-  if (step === 3) {
-    ['batukTB','jiwa_semangat','jiwa_murung','merokok_aktif','merokok_riwayat','gigi_karies','gigi_cabut'].forEach(id => {
-      if (!document.getElementById(id).value) { markErr(id); ok = false; }
-    });
-  }
+  // Step 3 (Faktor Risiko) - semua opsional, tidak ada validasi wajib
 
   if (step === 4) {
-    ['beratBadan','tinggiBadan','hipertensi','diabetes'].forEach(id => {
+    // Hanya BB dan TB yang wajib, hipertensi & diabetes opsional
+    ['beratBadan','tinggiBadan'].forEach(id => {
       if (!document.getElementById(id).value) { markErr(id); ok = false; }
     });
   }
