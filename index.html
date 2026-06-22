@@ -1235,18 +1235,24 @@ async function submitData() {
 }
 
 function addNew() {
-  // Reset form
-  document.querySelectorAll('.form-input,.form-select,.form-textarea').forEach(el => el.value = '');
-  fotoData = null;
-  removePhoto();
+  // Reset semua input
+  document.querySelectorAll('.form-input, .form-select, .form-textarea').forEach(el => el.value = '');
 
-  // Tampilkan kembali
+  // Sembunyikan group kondisional
+  document.getElementById('satkerGroup').style.display = 'none';
+  document.getElementById('hamilGroup').style.display = 'none';
+
+  // Sembunyikan success screen, tampilkan form kembali
   document.getElementById('successScreen').style.display = 'none';
   document.querySelector('.progress-wrap').style.display = 'block';
   document.querySelector('.step-nav').style.display = 'flex';
 
+  // Kembali ke step 1
   currentStep = 1;
   showStep(1);
+
+  // Scroll ke atas
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // ── REKAP (admin) ──
